@@ -73,3 +73,4 @@ HTMLCanvasElement.prototype.getContext = function (contextType: string, _options
   }
   return originalGetContext.call(this, contextType as "2d", _options)
 }
+
