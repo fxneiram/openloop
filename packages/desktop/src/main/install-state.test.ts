@@ -11,9 +11,9 @@ describe("hasExistingAppState", () => {
   })
 
   test("recognizes state written by an earlier OpenLoop launch", () => {
-    expect(hasExistingAppState([file("opencode.settings")])).toBe(true)
-    expect(hasExistingAppState([file("opencode.global.dat")])).toBe(true)
+    expect(hasExistingAppState([file("openloop.settings")])).toBe(true)
+    expect(hasExistingAppState([file("openloop.global.dat")])).toBe(true)
     expect(hasExistingAppState([file("window-state-abc.json")])).toBe(true)
-    expect(hasExistingAppState([directory("opencode")])).toBe(true)
+    expect(hasExistingAppState([directory("openloop")])).toBe(true)
   })
 })

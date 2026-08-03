@@ -242,7 +242,7 @@ describe("pty HttpApi bridge", () => {
       method: "POST",
       headers: {
         ...headers,
-        "x-opencode-ticket": "1",
+        "x-openloop-ticket": "1",
       },
     })
     expect(missing.status).toBe(404)

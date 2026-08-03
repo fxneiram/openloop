@@ -4,9 +4,9 @@ import type { Configuration } from "electron-builder"
 const legacyDesktopEntry = "resources/linux/opencode-desktop.desktop"
 
 const channels = [
-  { channel: "dev", appId: "ai.opencode.desktop.dev" },
-  { channel: "beta", appId: "ai.opencode.desktop.beta" },
-  { channel: "prod", appId: "ai.opencode.desktop" },
+  { channel: "dev", appId: "ai.openloop.desktop.dev" },
+  { channel: "beta", appId: "ai.openloop.desktop.beta" },
+  { channel: "prod", appId: "ai.openloop.desktop" },
 ] as const
 
 for (const channel of channels) {
@@ -51,9 +51,9 @@ test("keeps a hidden prod launcher for old Linux pins", async () => {
   ).toBe(true)
 
   const desktop = await Bun.file(legacyDesktopEntry).text()
-  expect(desktop).toContain("Exec=/opt/OpenCode/ai.opencode.desktop %U")
-  expect(desktop).toContain("Icon=ai.opencode.desktop")
-  expect(desktop).toContain("StartupWMClass=ai.opencode.desktop")
+  expect(desktop).toContain("Exec=/opt/OpenLoop/ai.openloop.desktop %U")
+  expect(desktop).toContain("Icon=ai.openloop.desktop")
+  expect(desktop).toContain("StartupWMClass=ai.openloop.desktop")
   expect(desktop).toContain("NoDisplay=true")
 })
 
@@ -65,11 +65,11 @@ test("bundles the CLI outside the dev app archive", async () => {
   if (previous === undefined) delete process.env.OPENLOOP_CHANNEL
   else process.env.OPENLOOP_CHANNEL = previous
 
-  expect(config.files).toContain("!resources/opencode-cli*")
+  expect(config.files).toContain("!resources/openloop-cli*")
   expect(config.extraResources).toContainEqual({
     from: "resources/",
     to: "",
-    filter: ["opencode-cli*"],
+    filter: ["openloop-cli*"],
   })
 })
 
@@ -85,7 +85,7 @@ for (const channel of ["beta", "prod"] as const) {
     expect(config.extraResources).not.toContainEqual({
       from: "resources/",
       to: "",
-      filter: ["opencode-cli*"],
+      filter: ["openloop-cli*"],
     })
   })
 }
