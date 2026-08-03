@@ -5,8 +5,11 @@
 # Prerequisites: bun (see package.json "packageManager") and turbo (installed
 # as a dev dependency; available via `bun turbo` after `make install`).
 
-# Use bash for recipes.
+# Use bash for recipes. Set PATH so bun is found by scripts spawned by
+# `bun run` even when the login shell is zsh and bash doesn't source ~/.zshrc.
 SHELL := /bin/bash
+BUN := $(HOME)/.bun/bin/bun
+export PATH := $(HOME)/.bun/bin:$(PATH)
 
 # Default target: show help.
 .DEFAULT_GOAL := help
@@ -18,44 +21,40 @@ help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-16s\033[0m %s\n", $$1, $$2}'
 
-# Fail early with a helpful message if bun is missing, instead of the cryptic
-# "make: bun: No such file or directory". All bun-dependent targets require it.
+# Fail early with a helpful message if bun is missing.
 check-bun:
-	@command -v bun >/dev/null 2>&1 || { \
-		echo "error: 'bun' is not installed or not on PATH."; \
-		echo "Install it with one of:"; \
-		echo "  curl -fsSL https://bun.sh/install | bash"; \
-		echo "  brew install oven-sh/bun/bun"; \
-		echo "Then restart your shell (or: source ~/.zshrc) so ~/.bun/bin is on PATH."; \
+	@test -x "$(BUN)" || { \
+		echo "error: 'bun' not found at $(BUN)."; \
+		echo "Install it with: curl -fsSL https://bun.sh/install | bash"; \
 		exit 1; \
 	}
 
 install: check-bun ## Install dependencies (bun install)
-	bun install
+	$(BUN) install
 
 run: check-bun ## Run the CLI in dev mode
-	bun run dev
+	$(BUN) run dev
 
 run-desktop: check-bun ## Run the desktop app (Electron) in dev mode
-	bun run dev:desktop
+	$(BUN) run dev:desktop
 
 build: check-bun ## Build the whole monorepo
-	bun turbo build
+	$(BUN) turbo build
 
 build-cli: check-bun ## Build only the CLI
-	bun run --cwd packages/opencode build
+	$(BUN) run --cwd packages/opencode build
 
 build-desktop: check-bun ## Package the desktop app
-	bun --cwd packages/desktop package
+	$(BUN) --cwd packages/desktop package
 
 test: check-bun ## Run tests (via turbo; root `bun test` is intentionally disabled)
-	bun turbo test
+	$(BUN) turbo test
 
 typecheck: check-bun ## Type-check the monorepo
-	bun turbo typecheck
+	$(BUN) turbo typecheck
 
 lint: check-bun ## Run the linter (oxlint)
-	bun run lint
+	$(BUN) run lint
 
 clean: ## Remove build artifacts and turbo cache
 	rm -rf packages/*/dist packages/desktop/out .turbo packages/*/.turbo
