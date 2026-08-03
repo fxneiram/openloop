@@ -506,30 +506,48 @@ function expectExit(result: RunResult, expected: number, label = "opencode") {
   throw new Error(`${label}: expected exit ${expected}, got ${result.exitCode}`)
 }
 
+type CliBody<A, E> = (input: CliFixture) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>
+type CliIt = (
+  name: string,
+  body: CliBody<unknown, unknown>,
+  opts?: number | TestOptions,
+) => void
+
 // `cliIt.live(name, fixture => effect)` is the same as
 // `it.live(name, () => withCliFixture(fixture))` — one fewer nesting level at
 // every call site. Use this for any test that needs the opencode CLI fixture.
 //
 // Subprocess tests must run against the real clock — a TestClock-paused
-// environment can't drive a child process. If you need `.only` or `.skip`, fall
-// back to `it.live` + `withCliFixture` directly.
-// Body's R is `Scope.Scope | never` so tests can yield* scope-requiring
-// resources (e.g. `opencode.serve`) without an extra `Effect.scoped` wrapper —
-// `withCliFixture`'s outer scope is the natural lifetime.
-export const cliIt = {
-  live: <A, E>(
-    name: string,
-    body: (input: CliFixture) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
-    opts?: number | TestOptions,
-  ) => it.live(name, () => withCliFixture(body), opts),
-  concurrent: <A, E>(
-    name: string,
-    body: (input: CliFixture) => Effect.Effect<A, E, Scope.Scope | HttpClient.HttpClient>,
-    opts?: number | TestOptions,
-  ) =>
-    (process.platform === "win32" ? test : test.concurrent)(
+// environment can't drive a child process. Body's R is `Scope.Scope | never`
+// so tests can yield* scope-requiring resources (e.g. `opencode.serve`) without
+// an extra `Effect.scoped` wrapper — `withCliFixture`'s outer scope is the
+// natural lifetime.
+export const cliIt: {
+  live: CliIt & { skip: CliIt }
+  concurrent: CliIt & { skip: CliIt }
+} = {
+  live: ((name, body, opts) =>
+    it.live(name, () => withCliFixture(body as CliBody<never, never>), opts)) as CliIt & {
+    skip: CliIt
+  },
+  concurrent: ((name, body, opts) => {
+    const register = process.platform === "win32" ? test : test.concurrent
+    return register(
       name,
-      () => Effect.runPromise(Effect.scoped(withCliFixture(body))),
+      () => Effect.runPromise(Effect.scoped(withCliFixture(body as CliBody<never, never>))),
       opts,
-    ),
+    )
+  }) as CliIt & { skip: CliIt },
+}
+
+cliIt.live.skip = (name, body, opts) =>
+  it.live.skip(name, () => withCliFixture(body as CliBody<never, never>), opts)
+
+cliIt.concurrent.skip = (name, body, opts) => {
+  const register = process.platform === "win32" ? test.skip : test.concurrent.skip
+  return register(
+    name,
+    () => Effect.runPromise(Effect.scoped(withCliFixture(body as CliBody<never, never>))),
+    opts,
+  )
 }
