@@ -9,10 +9,10 @@ new sst.cloudflare.x.SolidStart("Teams", {
   buildCommand: "bun run build:cloudflare",
   link: [SECRET.SupportApiKey],
   environment: {
-    OPENCODE_STORAGE_ADAPTER: "r2",
-    OPENCODE_STORAGE_ACCOUNT_ID: sst.cloudflare.DEFAULT_ACCOUNT_ID,
-    OPENCODE_STORAGE_ACCESS_KEY_ID: SECRET.R2AccessKey.value,
-    OPENCODE_STORAGE_SECRET_ACCESS_KEY: SECRET.R2SecretKey.value,
-    OPENCODE_STORAGE_BUCKET: storage.name,
+    OPENLOOP_STORAGE_ADAPTER: "r2",
+    OPENLOOP_STORAGE_ACCOUNT_ID: sst.cloudflare.DEFAULT_ACCOUNT_ID,
+    OPENLOOP_STORAGE_ACCESS_KEY_ID: SECRET.R2AccessKey.value,
+    OPENLOOP_STORAGE_SECRET_ACCESS_KEY: SECRET.R2SecretKey.value,
+    OPENLOOP_STORAGE_BUCKET: storage.name,
   },
 })

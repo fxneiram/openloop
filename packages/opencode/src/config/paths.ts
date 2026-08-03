@@ -24,7 +24,7 @@ export const directories = Effect.fn("ConfigPaths.directories")(function* (direc
   const afs = yield* FSUtil.Service
   return unique([
     Global.Path.config,
-    ...(!Flag.OPENCODE_DISABLE_PROJECT_CONFIG
+    ...(!Flag.OPENLOOP_DISABLE_PROJECT_CONFIG
       ? yield* afs.up({
           targets: [".openloop"],
           start: directory,
@@ -36,7 +36,7 @@ export const directories = Effect.fn("ConfigPaths.directories")(function* (direc
       start: Global.Path.home,
       stop: Global.Path.home,
     })),
-    ...(Flag.OPENCODE_CONFIG_DIR ? [Flag.OPENCODE_CONFIG_DIR] : []),
+    ...(Flag.OPENLOOP_CONFIG_DIR ? [Flag.OPENLOOP_CONFIG_DIR] : []),
   ])
 })
 
