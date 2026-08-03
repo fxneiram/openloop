@@ -36,7 +36,7 @@ export function WordmarkV2(props: Pick<ComponentProps<"svg">, "class">) {
             />
             <path
               opacity="0.7"
-              d="M442.846 36.4286H387.462V91.7143H442.846V110.143H369V18H442.846V36.4286Z"
+              d="M442.846 18H369V110H442.846V18Z"
               fill="currentColor"
             />
             <path
@@ -46,12 +46,12 @@ export function WordmarkV2(props: Pick<ComponentProps<"svg">, "class">) {
             />
             <path
               opacity="0.7"
-              d="M609.385 36.8571H572.462V92.1429H609.385V36.8571ZM627.846 110.571H554V18.4286H609.385V0H627.846V110.571Z"
+              d="M609.385 36.8571H572.462V92.1429H609.385V36.8571ZM627.846 110.571H554V18.4286H627.846V110.571Z"
               fill="currentColor"
             />
             <path
               opacity="0.7"
-              d="M664.462 36.4286V54.8571H701.385V36.4286H664.462ZM719.846 73.2857H664.462V91.7143H719.846V110.143H646V18H719.846V73.2857Z"
+              d="M664.462 91.7143H701.385V36.4286H664.462V91.7143ZM719.846 110.143H664.462V128.571H646V18H719.846V110.143Z"
               fill="currentColor"
             />
           </g>
