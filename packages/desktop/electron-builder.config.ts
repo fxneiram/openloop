@@ -36,9 +36,9 @@ const channel = (() => {
 })()
 
 const APP_IDS = {
-  dev: "ai.opencode.desktop.dev",
-  beta: "ai.opencode.desktop.beta",
-  prod: "ai.opencode.desktop",
+  dev: "ai.openloop.desktop.dev",
+  beta: "ai.openloop.desktop.beta",
+  prod: "ai.openloop.desktop",
 } as const
 
 const getBase = (appId: string): Configuration => ({
@@ -48,21 +48,21 @@ const getBase = (appId: string): Configuration => ({
     buildResources: "resources",
   },
   // Linux launchers are .desktop files, so this is the desktop file name,
-  // not just the app id. For prod, app id "ai.opencode.desktop" becomes
-  // "ai.opencode.desktop.desktop".
+  // not just the app id. For prod, app id "ai.openloop.desktop" becomes
+  // "ai.openloop.desktop.desktop".
   // https://developer.gnome.org/documentation/guidelines/maintainer/integrating.html
   // https://www.electron.build/docs/linux/
   extraMetadata: {
     desktopName: `${appId}.desktop`,
   },
-  files: ["out/**/*", "resources/**/*", "!resources/opencode-cli*"],
+  files: ["out/**/*", "resources/**/*", "!resources/openloop-cli*"],
   extraResources: [
     ...(channel === "dev"
       ? [
           {
             from: "resources/",
             to: "",
-            filter: ["opencode-cli*"],
+            filter: ["openloop-cli*"],
           },
         ]
       : []),
@@ -87,7 +87,7 @@ const getBase = (appId: string): Configuration => ({
   },
   protocols: {
     name: "OpenLoop",
-    schemes: ["opencode"],
+    schemes: ["openloop"],
   },
   win: {
     icon: `resources/icons/icon.ico`,
@@ -137,7 +137,7 @@ function getConfig() {
         ...base,
         appId,
         productName: "OpenLoop Beta",
-        protocols: { name: "OpenLoop Beta", schemes: ["opencode"] },
+        protocols: { name: "OpenLoop Beta", schemes: ["openloop"] },
         publish: { provider: "github", owner: "anomalyco", repo: "opencode-beta", channel: "latest" },
         deb: { fpm: [metainfoFpm(appId)] },
         rpm: { packageName: "openloop-beta", fpm: [metainfoFpm(appId)] },
@@ -148,7 +148,7 @@ function getConfig() {
         ...base,
         appId,
         productName: "OpenLoop",
-        protocols: { name: "OpenLoop", schemes: ["opencode"] },
+        protocols: { name: "OpenLoop", schemes: ["openloop"] },
         publish: { provider: "github", owner: "anomalyco", repo: "opencode", channel: "latest" },
         deb: { fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },
         rpm: { packageName: "openloop", fpm: [metainfoFpm(appId), legacyDesktopEntryFpm] },

@@ -55,21 +55,21 @@ const require = __cjs_mod__.createRequire(import.meta.url);
     },
     plugins: [
       {
-        name: "opencode:node-pty-narrower",
+        name: "openloop:node-pty-narrower",
         enforce: "pre",
         resolveId(s) {
           if (s === "@lydell/node-pty") return nodePtyPkg
         },
       },
       {
-        name: "opencode:virtual-server-module",
+        name: "openloop:virtual-server-module",
         enforce: "pre",
         resolveId(id) {
-          if (id === "virtual:opencode-server") return this.resolve(`${OPENLOOP_SERVER_DIST}/node.js`)
+          if (id === "virtual:openloop-server") return this.resolve(`${OPENLOOP_SERVER_DIST}/node.js`)
         },
       },
       {
-        name: "opencode:copy-server-assets",
+        name: "openloop:copy-server-assets",
         async writeBundle() {
           for (const l of await fs.readdir(OPENLOOP_SERVER_DIST)) {
             if (!l.endsWith(".wasm")) continue
