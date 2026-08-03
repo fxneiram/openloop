@@ -172,7 +172,7 @@ const layer: Layer.Layer<Service, never, HttpClient.HttpClient | AppProcess.Serv
         }
       }),
       method: Effect.fn("Installation.method")(function* () {
-        if (process.execPath.includes(path.join(".opencode", "bin"))) return "curl" as Method
+        if (process.execPath.includes(path.join(".openloop", "bin"))) return "curl" as Method
         if (process.execPath.includes(path.join(".local", "bin"))) return "curl" as Method
         const exec = process.execPath.toLowerCase()
 
@@ -216,7 +216,7 @@ const layer: Layer.Layer<Service, never, HttpClient.HttpClient | AppProcess.Serv
             return info.formulae[0].versions.stable
           }
           const response = yield* httpOk.execute(
-            HttpClientRequest.get("https://formulae.brew.sh/api/formula/opencode.json").pipe(
+            HttpClientRequest.get("https://formulae.brew.sh/api/formula/openloop.json").pipe(
               HttpClientRequest.acceptJson,
             ),
           )
@@ -247,7 +247,7 @@ const layer: Layer.Layer<Service, never, HttpClient.HttpClient | AppProcess.Serv
         if (detectedMethod === "scoop") {
           const response = yield* httpOk.execute(
             HttpClientRequest.get(
-              "https://raw.githubusercontent.com/ScoopInstaller/Main/master/bucket/opencode.json",
+              "https://raw.githubusercontent.com/ScoopInstaller/Main/master/bucket/openloop.json",
             ).pipe(HttpClientRequest.setHeaders({ Accept: "application/json" })),
           )
           const data = yield* HttpClientResponse.schemaBodyJson(ScoopManifest)(response)

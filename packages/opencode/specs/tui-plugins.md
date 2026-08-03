@@ -213,7 +213,7 @@ npm plugins can declare a version compatibility range in `package.json` using th
 - There is no uninstall, list, or update CLI command for external plugins.
 - Local file plugins are configured directly in `tui.json`.
 
-When `plugin` entries exist in a writable `.opencode` dir or `OPENCODE_CONFIG_DIR`, OpenCode installs `@opencode-ai/plugin` into that dir and writes:
+When `plugin` entries exist in a writable `.openloop` dir or `OPENCODE_CONFIG_DIR`, OpenCode installs `@opencode-ai/plugin` into that dir and writes:
 
 - `package.json`
 - `bun.lock`
@@ -413,7 +413,7 @@ Theme install behavior:
 - If the theme name already exists, install is skipped unless plugin metadata state is `updated`.
 - On `updated`, host skips rewrite when tracked `mtime`/`size` is unchanged.
 - When a theme already exists and state is not `updated`, host can still persist theme metadata when destination already exists.
-- Local plugins persist installed themes under the local `.opencode/themes` area near the plugin config source.
+- Local plugins persist installed themes under the local `.openloop/themes` area near the plugin config source.
 - Global plugins persist installed themes under the global `themes` dir.
 - Invalid or unreadable theme files are ignored.
 
@@ -538,7 +538,7 @@ The plugin manager is exposed as a command with title `Plugins` and value `plugi
 
 ## Current in-repo examples
 
-- Local smoke plugin: `.opencode/plugins/tui-smoke.tsx`
-- Local vim plugin: `.opencode/plugins/tui-vim.tsx`
-- Local smoke config: `.opencode/tui.json`
-- Local smoke theme: `.opencode/plugins/smoke-theme.json`
+- Local smoke plugin: `.openloop/plugins/tui-smoke.tsx`
+- Local vim plugin: `.openloop/plugins/tui-vim.tsx`
+- Local smoke config: `.openloop/tui.json`
+- Local smoke theme: `.openloop/plugins/smoke-theme.json`
