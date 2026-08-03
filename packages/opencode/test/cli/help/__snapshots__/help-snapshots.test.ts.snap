@@ -2,7 +2,7 @@
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode acp --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -29,7 +29,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode mcp --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -55,7 +55,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode attach --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -87,7 +87,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode run --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -133,7 +133,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode debug --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -167,7 +167,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode providers --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -191,7 +191,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode agent --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -214,7 +214,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode upgrade --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -238,7 +238,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode uninstall --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -261,7 +261,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode serve --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -287,7 +287,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode web --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -313,7 +313,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode models --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -337,7 +337,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode stats --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -361,7 +361,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode export --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -384,7 +384,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode import --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -406,7 +406,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode github --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -429,7 +429,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode pr --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -451,7 +451,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode session --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -474,7 +474,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode plugin --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -498,7 +498,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode db --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -525,7 +525,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode mcp list --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -544,7 +544,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode mcp add --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -569,7 +569,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode mcp auth --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -594,7 +594,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode mcp logout --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -616,7 +616,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode providers list --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -635,7 +635,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode providers login --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -659,7 +659,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode providers logout --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -681,7 +681,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode agent create --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -707,7 +707,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode agent list --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -726,7 +726,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode session list --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -747,7 +747,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode session delete --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -769,7 +769,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode github install --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -788,7 +788,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode github run --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
@@ -809,7 +809,7 @@ Options:
 
 exports[`opencode CLI help-text snapshots every documented command emits stable help text: opencode db path --help 1`] = `
 "⠀                                ▄     
-█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+█▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀▀ █▀▀▀ █▀▀▀
 █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
 ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀  ▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
 
