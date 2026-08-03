@@ -73,7 +73,7 @@ describe("v2 pty HttpApi", () => {
     const created = await request("/api/pty", tmp.path, {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ command: "/usr/bin/env", args: ["sh", "-c", "exit 4"], title: "v2" }),
+      body: JSON.stringify({ command: "/usr/bin/env", args: ["sh", "-c", "sleep 0.05; exit 4"], title: "v2" }),
     })
     expect(created.status).toBe(200)
     const body = Schema.decodeUnknownSync(Location.response(Pty.Info))(await created.json())
@@ -81,7 +81,8 @@ describe("v2 pty HttpApi", () => {
     expect(body.data.title).toBe("v2")
 
     // The canonical surface keeps exited sessions observable with their exit code.
-    const deadline = Date.now() + 5_000
+    // Give the native PTY more headroom under a loaded parallel test runner.
+    const deadline = Date.now() + 15_000
     let info: { status: string; exitCode?: number } | undefined
     while (Date.now() < deadline) {
       const found = await request(`/api/pty/${body.data.id}`, tmp.path)

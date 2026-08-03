@@ -60,6 +60,11 @@ function forkStderrDrain(stream: ReadableStream<Uint8Array>, into: string[]) {
 }
 
 function isolatedEnv(home: string, configJson: string): Record<string, string> {
+  // Ensure spawned "bun" subprocesses resolve even when the parent test runner
+  // was invoked with an absolute path and bun is not on the inherited PATH.
+  const bunDir = path.dirname(process.execPath)
+  const existingPath = process.env.PATH ?? ""
+  const pathEnv = existingPath.includes(bunDir) ? existingPath : `${bunDir}${path.delimiter}${existingPath}`
   return {
     OPENLOOP_TEST_HOME: home,
     HOME: home,
@@ -67,6 +72,7 @@ function isolatedEnv(home: string, configJson: string): Record<string, string> {
     XDG_DATA_HOME: path.join(home, ".local/share"),
     XDG_STATE_HOME: path.join(home, ".local/state"),
     XDG_CACHE_HOME: path.join(home, ".cache"),
+    PATH: pathEnv,
     OPENLOOP_CONFIG_CONTENT: configJson,
     OPENLOOP_DISABLE_PROJECT_CONFIG: "1",
     OPENLOOP_PURE: "1",
