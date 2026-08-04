@@ -46,13 +46,13 @@ test("reports a divergent native offset once and ignores equal offsets and unrel
   route.remove()
   document.body.append(route)
   await new Promise((resolve) => setTimeout(resolve, 0))
-  await frames(3)
+  await frames(5)
   expect(calls).toEqual([[0, false]])
 
   route.remove()
   document.body.append(route)
   await new Promise((resolve) => setTimeout(resolve, 0))
-  await frames(3)
+  await frames(5)
   expect(calls).toEqual([[0, false]])
 
   cleanup?.()
