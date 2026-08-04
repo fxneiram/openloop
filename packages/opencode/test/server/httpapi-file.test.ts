@@ -15,8 +15,8 @@ describe("file HttpApi", () => {
       yield* Effect.promise(() => Bun.write(path.join(dir.directory, "hello.txt"), "hello"))
 
       const [list, content, status] = yield* Effect.all([
-        requestInDirectory(FilePaths.list, dir.directory, { method: "GET" }),
-        requestInDirectory(FilePaths.content, dir.directory, { method: "GET" }),
+        requestInDirectory(FilePaths.list, dir.directory, { method: "GET" }, { path: "." }),
+        requestInDirectory(FilePaths.content, dir.directory, { method: "GET" }, { path: "hello.txt" }),
         requestInDirectory(FilePaths.status, dir.directory, { method: "GET" }),
       ])
 
@@ -40,13 +40,13 @@ describe("file HttpApi", () => {
       yield* Effect.promise(() => Bun.write(path.join(dir.directory, "hello.txt"), "needle"))
 
       const [text, symbols] = yield* Effect.all([
-        requestInDirectory(FilePaths.findText, dir.directory, { method: "GET" }),
-        requestInDirectory(FilePaths.findSymbol, dir.directory, { method: "GET" }),
+        requestInDirectory(FilePaths.findText, dir.directory, { method: "GET" }, { pattern: "needle" }),
+        requestInDirectory(FilePaths.findSymbol, dir.directory, { method: "GET" }, { query: "hello" }),
       ])
 
       const files = yield* pollWithTimeout(
         Effect.gen(function* () {
-          const response = yield* requestInDirectory(FilePaths.findFile, dir.directory, { method: "GET" })
+          const response = yield* requestInDirectory(FilePaths.findFile, dir.directory, { method: "GET" }, { query: "hello", type: "file" })
           const body = yield* response.json
           return (body as string[]).includes("hello.txt") ? { response, body } : undefined
         }),

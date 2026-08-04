@@ -26,8 +26,14 @@ export function request(path: string, init?: RequestInit) {
   )
 }
 
-export function requestInDirectory(path: string, directory: string, init: RequestInit = {}) {
+export function requestInDirectory(path: string, directory: string, init: RequestInit = {}, query?: Record<string, string>) {
   const headers = new Headers(init.headers)
   headers.set("x-opencode-directory", directory)
-  return request(path, { ...init, headers })
+  const url = new URL(path, "http://localhost")
+  if (query) {
+    for (const [key, value] of Object.entries(query)) {
+      url.searchParams.set(key, value)
+    }
+  }
+  return request(url.pathname + url.search, { ...init, headers })
 }
