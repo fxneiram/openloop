@@ -4,6 +4,7 @@ import path from "path"
 import { FilePaths } from "../../src/server/routes/instance/httpapi/groups/file"
 import { TestInstance } from "../fixture/fixture"
 import { pollWithTimeout, testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { httpApiLayer, requestInDirectory } from "./httpapi-layer"
 
 const it = testEffect(httpApiLayer)
@@ -33,7 +34,9 @@ describe("file HttpApi", () => {
     }),
     { git: true },
   )
+})
 
+describeRg("file HttpApi search", () => {
   it.instance("serves search endpoints", () =>
     Effect.gen(function* () {
       const dir = yield* TestInstance
