@@ -1,4 +1,4 @@
-import { describe, expect } from "bun:test"
+import { expect } from "bun:test"
 import fs from "fs/promises"
 import path from "path"
 import { pathToFileURL } from "url"
@@ -11,10 +11,11 @@ import { RepositoryCache } from "@opencode-ai/core/repository-cache"
 import { branch, git, gitRemote } from "./fixture/git"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
+import { describeGit } from "./lib/skip"
 
 const it = testEffect(Layer.empty)
 
-describe("RepositoryCache", () => {
+describeGit("RepositoryCache", () => {
   it.live("replaces a stale cache directory before cloning", () =>
     withRemote((fixture) =>
       Effect.gen(function* () {

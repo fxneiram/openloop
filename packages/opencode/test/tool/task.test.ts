@@ -22,6 +22,7 @@ import { ToolRegistry } from "@/tool/registry"
 import { RuntimeFlags } from "@/effect/runtime-flags"
 import { disposeAllInstances } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { ProviderV2 } from "@opencode-ai/core/provider"
 import { ModelV2 } from "@opencode-ai/core/model"
 
@@ -138,7 +139,7 @@ function reply(input: SessionPrompt.PromptInput, text: string): SessionV1.WithPa
   }
 }
 
-describe("tool.task", () => {
+describeRg("tool.task", () => {
   it.instance(
     "description sorts subagents by name and is stable across calls",
     () =>

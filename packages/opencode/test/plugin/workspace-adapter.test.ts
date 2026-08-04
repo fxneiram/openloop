@@ -14,7 +14,9 @@ import { InstanceStore } from "../../src/project/instance-store"
 import { InstanceState } from "../../src/effect/instance-state"
 import { disposeAllInstances, TestInstance } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { AccountTest } from "../fake/account"
+
 import { AuthTest } from "../fake/auth"
 import { NpmTest } from "../fake/npm"
 import { AppNodeBuilder } from "@opencode-ai/core/effect/app-node-builder"
@@ -35,7 +37,7 @@ afterEach(async () => {
   await disposeAllInstances()
 })
 
-describe("plugin.workspace", () => {
+describeRg("plugin.workspace", () => {
   it.instance("plugin can install a workspace adapter", () =>
     Effect.gen(function* () {
       const dir = (yield* TestInstance).directory

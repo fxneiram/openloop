@@ -1,4 +1,4 @@
-import { describe, expect } from "bun:test"
+import { expect } from "bun:test"
 import { $ } from "bun"
 import fs from "fs/promises"
 import path from "path"
@@ -9,10 +9,11 @@ import { AbsolutePath, RelativePath } from "@opencode-ai/core/schema"
 import { branch, commit, gitRemote } from "./fixture/git"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
+import { describeGit } from "./lib/skip"
 
 const it = testEffect(LayerNode.compile(Git.node))
 
-describe("Git", () => {
+describeGit("Git", () => {
   it.live("clones a remote and reads checkout metadata", () =>
     withRemote((fixture) =>
       Effect.gen(function* () {
@@ -79,7 +80,7 @@ async function initRepo(directory: string) {
   await $`git commit --allow-empty -m root`.cwd(directory).quiet()
 }
 
-describe("Git worktrees", () => {
+describeGit("Git worktrees", () => {
   it.live("creates, lists, and removes linked worktrees", () =>
     Effect.gen(function* () {
       const root = yield* Effect.acquireRelease(
@@ -110,7 +111,7 @@ describe("Git worktrees", () => {
   )
 })
 
-describe("Git trees", () => {
+describeGit("Git trees", () => {
   it.live("captures, compares, previews, and restores scoped trees", () =>
     Effect.gen(function* () {
       const root = yield* Effect.acquireRelease(

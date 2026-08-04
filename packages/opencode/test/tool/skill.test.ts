@@ -12,6 +12,7 @@ import { ToolRegistry } from "@/tool/registry"
 import { disposeAllInstances, TestInstance } from "../fixture/fixture"
 import { SessionID, MessageID } from "../../src/session/schema"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 
 const baseCtx: Omit<Tool.Context, "ask"> = {
   sessionID: SessionID.make("ses_test"),
@@ -29,7 +30,7 @@ afterEach(async () => {
 
 const it = testEffect(LayerNode.compile(LayerNode.group([ToolRegistry.node, CrossSpawnSpawner.node, Ripgrep.node])))
 
-describe("tool.skill", () => {
+describeRg("tool.skill", () => {
   it.instance("execute returns skill content block with files", () =>
     Effect.gen(function* () {
       const dir = (yield* TestInstance).directory

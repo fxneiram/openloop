@@ -1,4 +1,4 @@
-import { describe, expect } from "bun:test"
+import { expect } from "bun:test"
 import { $ } from "bun"
 import fs from "fs/promises"
 import path from "path"
@@ -19,6 +19,7 @@ import { SessionTable } from "@opencode-ai/core/session/sql"
 import { SessionStore } from "@opencode-ai/core/session/store"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
+import { describeGit } from "./lib/skip"
 
 const it = testEffect(
   AppNodeBuilder.build(
@@ -50,7 +51,7 @@ async function initRepo(directory: string) {
   await $`git commit -m root`.cwd(directory).quiet()
 }
 
-describe("MoveSession", () => {
+describeGit("MoveSession", () => {
   it.live("moves session changes to another project directory", () =>
     Effect.gen(function* () {
       const root = yield* Effect.acquireRelease(

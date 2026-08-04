@@ -13,6 +13,7 @@ import { Truncate } from "@/tool/truncate"
 import { Agent } from "../../src/agent/agent"
 import { TestInstance, tmpdirScoped } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { Config } from "@/config/config"
 import { RuntimeFlags } from "@/effect/runtime-flags"
 import { Git } from "@/git"
@@ -85,7 +86,7 @@ const git = Effect.fn("GlobToolTest.git")(function* (cwd: string, args: string[]
   })
 })
 
-describe("tool.glob", () => {
+describeRg("tool.glob", () => {
   it.instance("matches files from a directory path", () =>
     Effect.gen(function* () {
       const test = yield* TestInstance

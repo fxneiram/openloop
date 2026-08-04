@@ -7,10 +7,11 @@ import { Ripgrep } from "@opencode-ai/core/ripgrep"
 import { RelativePath } from "@opencode-ai/core/schema"
 import { tmpdir } from "./fixture/tmpdir"
 import { testEffect } from "./lib/effect"
+import { describeRg } from "./lib/skip"
 
 const it = testEffect(LayerNode.compile(Ripgrep.node))
 
-describe("Ripgrep", () => {
+describeRg("Ripgrep", () => {
   it.live("keeps ignored files out of catch-all find results", () =>
     Effect.acquireUseRelease(
       Effect.promise(() => tmpdir()),

@@ -18,6 +18,7 @@ import { Watcher } from "@opencode-ai/core/filesystem/watcher"
 import { Git } from "../../src/git"
 import { Vcs } from "@/project/vcs"
 import { testEffect } from "../lib/effect"
+import { describeGit } from "../lib/skip"
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -82,7 +83,7 @@ const publishHeadChangeUntil = Effect.fn("VcsTest.publishHeadChangeUntil")(funct
 // Tests
 // ---------------------------------------------------------------------------
 
-describe("Vcs", () => {
+describeGit("Vcs", () => {
   afterEach(async () => {
     await disposeAllInstances()
   })
@@ -155,7 +156,7 @@ describe("Vcs", () => {
   )
 })
 
-describe("Vcs diff", () => {
+describeGit("Vcs diff", () => {
   afterEach(async () => {
     await disposeAllInstances()
   })

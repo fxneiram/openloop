@@ -20,7 +20,9 @@ import { EventSequenceTable } from "@opencode-ai/core/event/sql"
 import { resetDatabase } from "../fixture/db"
 import { disposeAllInstances, provideTmpdirInstance, requireInstance, TestInstance } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { registerAdapter } from "../../src/control-plane/adapters"
+
 import { WorkspaceV2 } from "@opencode-ai/core/workspace"
 import { WorkspaceTable } from "@opencode-ai/core/control-plane/workspace.sql"
 import type { Target, WorkspaceAdapter, WorkspaceInfo } from "../../src/control-plane/types"
@@ -376,7 +378,7 @@ describe("workspace schemas and exports", () => {
   })
 })
 
-describe("workspace CRUD", () => {
+describeRg("workspace CRUD", () => {
   it.instance(
     "get returns undefined for a missing workspace",
     () =>
@@ -1068,7 +1070,7 @@ describe("workspace CRUD", () => {
   })
 })
 
-describe("workspace sync state", () => {
+describeRg("workspace sync state", () => {
   it.instance(
     "startWorkspaceSyncing is disabled by the experimental workspace flag",
     () =>

@@ -37,6 +37,7 @@ import { disposeAllInstances, provideInstanceEffect, TestInstance, tmpdirScoped 
 import { TestLLMServer } from "../lib/llm-server"
 import { testProviderConfig } from "../lib/test-provider"
 import { pollWithTimeout, testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 
 const originalWorkspaces = Flag.OPENCODE_EXPERIMENTAL_WORKSPACES
 const noopBootstrapLayer = Layer.succeed(
@@ -234,7 +235,7 @@ afterEach(async () => {
   await resetDatabase()
 })
 
-describe("session HttpApi", () => {
+describeRg("session HttpApi", () => {
   it.effect("maps busy sessions to public session busy errors", () =>
     Effect.gen(function* () {
       const sessionID = SessionID.descending()

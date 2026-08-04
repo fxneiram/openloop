@@ -15,6 +15,7 @@ import { Agent } from "../../src/agent/agent"
 import { Ripgrep } from "@opencode-ai/core/ripgrep"
 import { FSUtil } from "@opencode-ai/core/fs-util"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { Permission } from "../../src/permission"
 import type * as Tool from "../../src/tool/tool"
 import { Config } from "@/config/config"
@@ -76,7 +77,7 @@ const git = Effect.fn("GrepToolTest.git")(function* (cwd: string, args: string[]
   })
 })
 
-describe("tool.grep", () => {
+describeRg("tool.grep", () => {
   rooted.live("basic search", () =>
     Effect.gen(function* () {
       const info = yield* GrepTool

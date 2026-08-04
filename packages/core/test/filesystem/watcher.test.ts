@@ -14,6 +14,7 @@ import { AbsolutePath } from "@opencode-ai/core/schema"
 import { location } from "../fixture/location"
 import { tmpdir } from "../fixture/tmpdir"
 import { testEffect } from "../lib/effect"
+import { describeGit } from "../lib/skip"
 
 const describeWatcher = Watcher.hasNativeBinding() && !process.env.CI ? describe : describe.skip
 
@@ -144,29 +145,31 @@ function ready(directory: string) {
 }
 
 describeWatcher("Watcher", () => {
-  it.live("publishes root create, update, and delete events", () =>
-    withTmp(
-      (directory) =>
-        Effect.gen(function* () {
-          const fs = yield* FSUtil.Service
-          const file = path.join(directory, "watch.txt")
-          yield* ready(directory)
-          for (const item of [
-            { event: "add" as const, trigger: fs.writeFileString(file, "a") },
-            { event: "change" as const, trigger: fs.writeFileString(file, "b") },
-            { event: "unlink" as const, trigger: fs.remove(file) },
-          ]) {
-            expect(
-              yield* nextUpdate((event) => event.file === file && event.event === item.event, item.trigger),
-            ).toEqual({
-              file,
-              event: item.event,
-            })
-          }
-        }),
-      { git: true },
-    ),
-  )
+  describeGit("with git", () => {
+    it.live("publishes root create, update, and delete events", () =>
+      withTmp(
+        (directory) =>
+          Effect.gen(function* () {
+            const fs = yield* FSUtil.Service
+            const file = path.join(directory, "watch.txt")
+            yield* ready(directory)
+            for (const item of [
+              { event: "add" as const, trigger: fs.writeFileString(file, "a") },
+              { event: "change" as const, trigger: fs.writeFileString(file, "b") },
+              { event: "unlink" as const, trigger: fs.remove(file) },
+            ]) {
+              expect(
+                yield* nextUpdate((event) => event.file === file && event.event === item.event, item.trigger),
+              ).toEqual({
+                file,
+                event: item.event,
+              })
+            }
+          }),
+        { git: true },
+      ),
+    )
+  })
 
   it.live("skips non-git roots", () =>
     withTmp((directory) =>
@@ -197,70 +200,74 @@ describeWatcher("Watcher", () => {
     }).pipe(Effect.provide(AppNodeBuilder.build(LayerNode.group([FSUtil.node, EventV2.node])))),
   )
 
-  it.live("ignores .git/index changes", () =>
-    withTmp(
-      (directory) =>
-        Effect.gen(function* () {
-          const fs = yield* FSUtil.Service
-          const index = path.join(directory, ".git", "index")
-          yield* ready(directory)
-          yield* noUpdate(
-            (event) => event.file === index,
-            fs
-              .writeFileString(path.join(directory, "tracked.txt"), "a")
-              .pipe(Effect.andThen(Effect.promise(() => $`git add .`.cwd(directory).quiet())), Effect.asVoid),
-          )
-        }),
-      { git: true },
-    ),
-  )
-
-  it.live("publishes .git/HEAD events", () =>
-    withTmp(
-      (directory) =>
-        Effect.gen(function* () {
-          const fs = yield* FSUtil.Service
-          const head = path.join(directory, ".git", "HEAD")
-          const branch = `watch-${Math.random().toString(36).slice(2)}`
-          yield* ready(directory)
-          yield* Effect.promise(() => $`git branch ${branch}`.cwd(directory).quiet())
-          expect(
-            yield* nextUpdate((event) => event.file === head, fs.writeFileString(head, `ref: refs/heads/${branch}\n`)),
-          ).toMatchObject({ file: head })
-        }),
-      { git: true },
-    ),
-  )
-
-  const describeSymlink = process.platform !== "win32" ? describe : describe.skip
-  describeSymlink("symlinked .git", () => {
-    it.live("publishes .git/HEAD events through a symlinked .git directory", () =>
+  describeGit("with git", () => {
+    it.live("ignores .git/index changes", () =>
       withTmp(
         (directory) =>
           Effect.gen(function* () {
-            const afs = yield* FSUtil.Service
-            const actual = path.join(directory, "..", `actual_${path.basename(directory)}`)
-            yield* Effect.addFinalizer(() => Effect.promise(() => fs.rm(actual, { recursive: true, force: true })))
+            const fs = yield* FSUtil.Service
+            const index = path.join(directory, ".git", "index")
             yield* ready(directory)
-            const head = path.join(directory, ".git", "HEAD")
-            const branch = `watch-${Math.random().toString(36).slice(2)}`
-            yield* Effect.promise(() => $`git branch ${branch}`.cwd(directory).quiet())
-            expect(
-              yield* nextUpdate(
-                (event) => event.file === path.join(actual, "HEAD"),
-                afs.writeFileString(head, `ref: refs/heads/${branch}\n`),
-              ),
-            ).toEqual({ file: path.join(actual, "HEAD"), event: "change" })
+            yield* noUpdate(
+              (event) => event.file === index,
+              fs
+                .writeFileString(path.join(directory, "tracked.txt"), "a")
+                .pipe(Effect.andThen(Effect.promise(() => $`git add .`.cwd(directory).quiet())), Effect.asVoid),
+            )
           }),
-        {
-          git: true,
-          init: async (directory) => {
-            const actual = path.join(directory, "..", `actual_${path.basename(directory)}`)
-            await fs.rename(path.join(directory, ".git"), actual)
-            await fs.symlink(actual, path.join(directory, ".git"))
-          },
-        },
+        { git: true },
       ),
     )
+
+    it.live("publishes .git/HEAD events", () =>
+      withTmp(
+        (directory) =>
+          Effect.gen(function* () {
+            const fs = yield* FSUtil.Service
+            const head = path.join(directory, ".git", "HEAD")
+            const branch = `watch-${Math.random().toString(36).slice(2)}`
+            yield* ready(directory)
+            yield* Effect.promise(() => $`git branch ${branch}`.cwd(directory).quiet())
+            expect(
+              yield* nextUpdate((event) => event.file === head, fs.writeFileString(head, `ref: refs/heads/${branch}\n`)),
+            ).toMatchObject({ file: head })
+          }),
+        { git: true },
+      ),
+    )
+  })
+
+  const describeSymlink = process.platform !== "win32" ? describe : describe.skip
+  describeSymlink("symlinked .git", () => {
+    describeGit("with git", () => {
+      it.live("publishes .git/HEAD events through a symlinked .git directory", () =>
+        withTmp(
+          (directory) =>
+            Effect.gen(function* () {
+              const afs = yield* FSUtil.Service
+              const actual = path.join(directory, "..", `actual_${path.basename(directory)}`)
+              yield* Effect.addFinalizer(() => Effect.promise(() => fs.rm(actual, { recursive: true, force: true })))
+              yield* ready(directory)
+              const head = path.join(directory, ".git", "HEAD")
+              const branch = `watch-${Math.random().toString(36).slice(2)}`
+              yield* Effect.promise(() => $`git branch ${branch}`.cwd(directory).quiet())
+              expect(
+                yield* nextUpdate(
+                  (event) => event.file === path.join(actual, "HEAD"),
+                  afs.writeFileString(head, `ref: refs/heads/${branch}\n`),
+                ),
+              ).toEqual({ file: path.join(actual, "HEAD"), event: "change" })
+            }),
+          {
+            git: true,
+            init: async (directory) => {
+              const actual = path.join(directory, "..", `actual_${path.basename(directory)}`)
+              await fs.rename(path.join(directory, ".git"), actual)
+              await fs.symlink(actual, path.join(directory, ".git"))
+            },
+          },
+        ),
+      )
+    })
   })
 })

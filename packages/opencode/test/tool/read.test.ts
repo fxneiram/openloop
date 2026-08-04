@@ -26,6 +26,7 @@ import {
   tmpdirScoped,
 } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 
 const FIXTURES_DIR = path.join(import.meta.dir, "fixtures")
 
@@ -148,7 +149,7 @@ const asks = () => {
   }
 }
 
-describe("tool.read external_directory permission", () => {
+describeRg("tool.read external_directory permission", () => {
   it.live("allows reading absolute path inside project directory", () =>
     Effect.gen(function* () {
       const dir = yield* tmpdirScoped()
@@ -259,7 +260,7 @@ describe("tool.read external_directory permission", () => {
   )
 })
 
-describe("tool.read env file permissions", () => {
+describeRg("tool.read env file permissions", () => {
   const cases: [string, boolean][] = [
     [".env", true],
     [".env.local", true],
@@ -312,7 +313,7 @@ describe("tool.read env file permissions", () => {
   }
 })
 
-describe("tool.read truncation", () => {
+describeRg("tool.read truncation", () => {
   it.instance("truncates large file by bytes and sets truncated metadata", () =>
     Effect.gen(function* () {
       const test = yield* TestInstance
@@ -567,7 +568,7 @@ root_type Monster;`
   )
 })
 
-describe("tool.read loaded instructions", () => {
+describeRg("tool.read loaded instructions", () => {
   it.live("loads AGENTS.md from parent directory and includes in metadata", () =>
     Effect.gen(function* () {
       const dir = yield* tmpdirScoped()
@@ -584,7 +585,7 @@ describe("tool.read loaded instructions", () => {
   )
 })
 
-describe("tool.read binary detection", () => {
+describeRg("tool.read binary detection", () => {
   it.live("rejects text extension files with null bytes", () =>
     Effect.gen(function* () {
       const dir = yield* tmpdirScoped()

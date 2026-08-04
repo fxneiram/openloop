@@ -22,6 +22,7 @@ import { InstanceStore } from "../../src/project/instance-store"
 import { Project } from "../../src/project/project"
 import { InstancePaths } from "../../src/server/routes/instance/httpapi/groups/instance"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 import { httpApiLayer, requestInDirectory } from "./httpapi-layer"
 
 const originalWorkspaces = Flag.OPENCODE_EXPERIMENTAL_WORKSPACES
@@ -174,7 +175,7 @@ afterEach(async () => {
   await resetDatabase()
 })
 
-describe("workspace HttpApi", () => {
+describeRg("workspace HttpApi", () => {
   it.live("serves read endpoints", () =>
     Effect.gen(function* () {
       const dir = yield* tmpdirScoped({ git: true })

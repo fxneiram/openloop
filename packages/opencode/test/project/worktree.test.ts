@@ -10,6 +10,7 @@ import { InstanceStore } from "../../src/project/instance-store"
 import { Worktree } from "../../src/worktree"
 import { disposeAllInstances, provideInstance, TestInstance } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeGit } from "../lib/skip"
 
 const it = testEffect(
   LayerNode.compile(LayerNode.group([Worktree.node, FSUtil.node, Git.node]), [
@@ -75,7 +76,7 @@ const gitResult = Effect.fn("WorktreeTest.gitResult")(function* (cwd: string, ar
   return yield* service.run(args, { cwd })
 })
 
-describe("Worktree", () => {
+describeGit("Worktree", () => {
   afterEach(() => disposeAllInstances())
 
   describe("makeWorktreeInfo", () => {

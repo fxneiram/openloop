@@ -1,4 +1,4 @@
-import { describe, expect } from "bun:test"
+import { expect } from "bun:test"
 import fs from "fs/promises"
 import path from "path"
 import { Effect } from "effect"
@@ -7,6 +7,7 @@ import { Ripgrep } from "@opencode-ai/core/ripgrep"
 import { AbsolutePath, RelativePath } from "@opencode-ai/core/schema"
 import { tmpdir } from "../fixture/tmpdir"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 
 const it = testEffect(LayerNode.compile(Ripgrep.node))
 
@@ -16,7 +17,7 @@ const withTmp = <A, E, R>(f: (directory: AbsolutePath) => Effect.Effect<A, E, R>
     (tmp) => Effect.promise(() => tmp[Symbol.asyncDispose]()),
   ).pipe(Effect.flatMap((tmp) => f(AbsolutePath.make(tmp.path))))
 
-describe("Ripgrep", () => {
+describeRg("Ripgrep", () => {
   it.live("globs files as an array", () =>
     withTmp((cwd) =>
       Effect.gen(function* () {

@@ -1,5 +1,5 @@
 import path from "path"
-import { Context, Effect, Layer, Stream } from "effect"
+import { Context, Effect, Layer, Schema, Stream } from "effect"
 import { FetchHttpClient, HttpClient, HttpClientRequest } from "effect/unstable/http"
 import { ChildProcess } from "effect/unstable/process"
 import { ChildProcessSpawner } from "effect/unstable/process/ChildProcessSpawner"
@@ -12,6 +12,11 @@ import { which } from "../util/which"
 
 export namespace RipgrepBinary {
   const VERSION = "15.1.0"
+
+  export class NotAvailableError extends Schema.TaggedErrorClass<NotAvailableError>()("RipgrepBinary.NotAvailableError", {
+    message: Schema.String,
+  }) {}
+
   const PLATFORM = {
     "arm64-darwin": { platform: "aarch64-apple-darwin", extension: "tar.gz" },
     "arm64-linux": { platform: "aarch64-unknown-linux-gnu", extension: "tar.gz" },
@@ -96,6 +101,13 @@ export namespace RipgrepBinary {
 
             const target = path.join(Global.Path.bin, `rg${process.platform === "win32" ? ".exe" : ""}`)
             if (yield* fs.isFile(target).pipe(Effect.orDie)) return target
+
+            const allowDownload = process.env.OPENCODE_ALLOW_RIPGREP_DOWNLOAD === "1" ||
+              process.env.OPENCODE_ALLOW_RIPGREP_DOWNLOAD === "true"
+            if (!allowDownload) {
+              const reason = `ripgrep binary (${process.platform === "win32" ? "rg.exe" : "rg"}) not found on PATH and automatic download is disabled. Set OPENCODE_ALLOW_RIPGREP_DOWNLOAD=true to allow downloading from GitHub releases.`
+              return yield* new NotAvailableError({ message: reason })
+            }
 
             const platformKey = `${process.arch}-${process.platform}` as keyof typeof PLATFORM
             const config = PLATFORM[platformKey]

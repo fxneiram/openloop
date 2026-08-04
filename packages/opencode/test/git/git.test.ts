@@ -7,6 +7,7 @@ import { Effect } from "effect"
 import { Git } from "../../src/git"
 import { tmpdir } from "../fixture/fixture"
 import { testEffect } from "../lib/effect"
+import { describeGit } from "../lib/skip"
 
 const weird = process.platform === "win32" ? "space file.txt" : "tab\tfile.txt"
 const it = testEffect(LayerNode.compile(LayerNode.group([Git.node])))
@@ -17,7 +18,7 @@ const scopedTmpdir = (options?: Parameters<typeof tmpdir>[0]) =>
     (tmp) => Effect.promise(() => tmp[Symbol.asyncDispose]()),
   )
 
-describe("Git", () => {
+describeGit("Git", () => {
   it.live("branch() returns current branch name", () =>
     Effect.gen(function* () {
       const tmp = yield* scopedTmpdir({ git: true })

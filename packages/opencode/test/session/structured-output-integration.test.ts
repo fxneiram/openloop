@@ -8,6 +8,7 @@ import { Session } from "@/session/session"
 import { SessionPrompt } from "../../src/session/prompt"
 import { MessageV2 } from "../../src/session/message-v2"
 import { testEffect } from "../lib/effect"
+import { describeRg } from "../lib/skip"
 
 // Skip tests if no API key is available
 const hasApiKey = !!process.env.ANTHROPIC_API_KEY
