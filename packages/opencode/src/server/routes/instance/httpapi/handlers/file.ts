@@ -25,9 +25,11 @@ export const fileHandlers = HttpApiBuilder.group(InstanceHttpApi, "file", (handl
     })
 
     const findText = Effect.fn("FileHttpApi.findText")(function* (ctx: { query: { pattern: string } }) {
-      return (yield* ripgrep
-        .grep({ cwd: (yield* InstanceState.context).directory, pattern: ctx.query.pattern, limit: 10 })
-        .pipe(Effect.orDie)).map((match) => ({
+      const dir = (yield* InstanceState.context).directory
+      const result = yield* ripgrep
+        .grep({ cwd: dir, pattern: ctx.query.pattern, limit: 10 })
+        .pipe(Effect.catchCause(() => Effect.succeed([] as readonly FileSystem.Match[])))
+      return result.map((match) => ({
         path: { text: match.entry.path },
         lines: { text: match.text },
         line_number: match.line,
