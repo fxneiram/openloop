@@ -22,7 +22,7 @@ import { OpenApi } from "effect/unstable/httpapi"
 import { TestLLMServer } from "../../lib/llm-server"
 import path from "path"
 import { array, boolean, check, isRecord, message, object, stable } from "./assertions"
-import { controlledPtyInput, http, route } from "./dsl"
+import { controlledPtyInput, http, pending, route } from "./dsl"
 import {
   cleanupExercisePaths,
   exerciseConfigDirectory,
@@ -36,6 +36,9 @@ import { runScenario } from "./runner"
 import { disposeApps } from "./backend"
 import { runtime } from "./runtime"
 import { type Scenario } from "./types"
+import { which } from "@opencode-ai/core/util/which"
+
+const hasRg = which(process.platform === "win32" ? "rg.exe" : "rg") !== null
 
 function cursor(input: Record<string, unknown>) {
   return Buffer.from(JSON.stringify(input)).toString("base64url")
@@ -341,11 +344,13 @@ const scenarios: Scenario[] = [
       check(body.type === "text" && body.content === "", "missing file content should return an empty text result")
     }),
   http.protected.get("/file/status", "file.status").json(200, array),
-  http.protected
-    .get("/find", "find.text")
-    .seeded((ctx) => ctx.file("hello.txt", "hello\n"))
-    .at((ctx) => ({ path: `/find?${new URLSearchParams({ pattern: "hello" })}`, headers: ctx.headers() }))
-    .json(200, array),
+  hasRg
+    ? http.protected
+        .get("/find", "find.text")
+        .seeded((ctx) => ctx.file("hello.txt", "hello\n"))
+        .at((ctx) => ({ path: `/find?${new URLSearchParams({ pattern: "hello" })}`, headers: ctx.headers() }))
+        .json(200, array)
+    : pending("GET", "/find", "find.text", "ripgrep not available"),
   http.protected
     .get("/find/file", "find.files")
     .seeded((ctx) => ctx.file("hello.txt", "hello\n"))
