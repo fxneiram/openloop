@@ -117,6 +117,8 @@ export const make = Effect.gen(function* () {
 
   const offerQueue = Effect.fn("LoopState.offerQueue")(function* (loopName: string) {
     const entry = yield* get(loopName)
+    const size = Queue.sizeUnsafe(entry.queue)
+    if (size >= entry.queue.capacity) return false
     return yield* Queue.offer(entry.queue, undefined).pipe(
       Effect.matchEffect({
         onSuccess: () => Effect.succeed(true),

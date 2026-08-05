@@ -19,6 +19,11 @@ export const ServeCommand = effectCmd({
     const server = yield* Effect.promise(() => Server.listen(opts))
     console.log(`opencode server listening on http://${server.hostname}:${server.port}`)
 
+    const { startScheduler } = yield* Effect.promise(() => import("@/loop/startup"))
+    yield* startScheduler().pipe(
+      Effect.catchCause((cause) => Effect.logError("Loop scheduler failed to start", { cause })),
+    )
+
     yield* Effect.never
   }),
 })

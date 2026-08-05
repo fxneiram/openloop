@@ -1,6 +1,6 @@
 export * as LoopRunProjection from "./sql-projection"
 
-import { and, eq } from "drizzle-orm"
+import { and, desc, eq } from "drizzle-orm"
 import { Effect, Schema } from "effect"
 import type { Database } from "../database/database"
 import { LoopRunTable } from "./sql"
@@ -57,7 +57,7 @@ export const findByLoop = Effect.fn("LoopRunProjection.findByLoop")(function* (
     .select()
     .from(LoopRunTable)
     .where(eq(LoopRunTable.loop_name, input.loopName))
-    .orderBy(LoopRunTable.started_at)
+    .orderBy(desc(LoopRunTable.started_at))
     .limit(input.limit)
     .all()
     .pipe(Effect.orDie)
@@ -84,7 +84,7 @@ export const latestByLoop = Effect.fn("LoopRunProjection.latestByLoop")(function
     .select()
     .from(LoopRunTable)
     .where(eq(LoopRunTable.loop_name, loopName))
-    .orderBy(LoopRunTable.started_at)
+    .orderBy(desc(LoopRunTable.started_at))
     .limit(1)
     .get()
     .pipe(Effect.orDie)
