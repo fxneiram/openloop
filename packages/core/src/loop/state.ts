@@ -147,4 +147,4 @@ export const make = Effect.gen(function* () {
 })
 
 export const layer = Layer.effect(Service, make)
-export const node = { kind: "layer", service: Service, layer } as never
+export const node = { kind: "layer" as const, name: Service.key, service: Service, implementation: layer, dependencies: [] as readonly never[] }
