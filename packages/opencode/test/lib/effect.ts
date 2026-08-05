@@ -161,7 +161,7 @@ export const awaitWithTimeout = <A, E, R>(
 export const pollWithTimeout = <A, E, R>(
   self: Effect.Effect<A | undefined, E, R>,
   message: string,
-  duration: Duration.Input = "5 seconds",
+  duration: Duration.Input = "10 seconds",
 ) =>
   Effect.gen(function* () {
     while (true) {

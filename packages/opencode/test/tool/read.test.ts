@@ -194,7 +194,6 @@ describeRg("tool.read external_directory permission", () => {
         const { items, next } = asks()
         const target = path.join(dir, "test.txt")
         const alt = target
-          .replace(/^[A-Za-z]:/, "")
           .replaceAll("\\", "/")
           .toLowerCase()
 

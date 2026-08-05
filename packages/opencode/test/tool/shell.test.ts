@@ -130,7 +130,8 @@ const forms = (dir: string) => {
   const full = Filesystem.normalizePath(dir)
   const slash = full.replaceAll("\\", "/")
   const root = slash.replace(/^[A-Za-z]:/, "")
-  return Array.from(new Set([full, slash, root, root.toLowerCase()]))
+  const lowerSlash = full.toLowerCase().replaceAll("\\", "/")
+  return Array.from(new Set([full, slash, root, lowerSlash]))
 }
 
 const withShell = <A, E, R>(item: { label: string; shell: string }, self: Effect.Effect<A, E, R>) =>
