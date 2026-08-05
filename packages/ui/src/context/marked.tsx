@@ -484,7 +484,7 @@ async function highlightCodeBlocks(html: string): Promise<string> {
   const highlighter = await getSharedHighlighter({
     themes: ["OpenLoop"],
     langs: [],
-    preferredHighlighter: "shiki-wasm",
+    preferredHighlighter: "shiki-js",
   })
 
   let result = html
@@ -537,7 +537,7 @@ export const { use: useMarked, provider: MarkedProvider } = createSimpleContext(
           const highlighter = await getSharedHighlighter({
             themes: ["OpenLoop"],
             langs: [],
-            preferredHighlighter: "shiki-wasm",
+            preferredHighlighter: "shiki-js",
           })
           if (!(lang in bundledLanguages)) {
             lang = "text"
