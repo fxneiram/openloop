@@ -127,6 +127,7 @@ function footer(): FooterApi {
       closed = true
       notify()
     },
+    updateLoops() {},
   }
 }
 

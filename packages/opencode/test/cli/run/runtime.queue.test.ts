@@ -61,6 +61,9 @@ function footer() {
       prompts.clear()
       closes.clear()
     },
+    updateLoops() {
+      // no-op
+    },
   }
 
   return {

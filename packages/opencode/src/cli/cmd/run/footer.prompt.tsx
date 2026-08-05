@@ -18,6 +18,7 @@ import {
   displayCharAt,
   displaySlice,
   isExitCommand,
+  isLoopCommand,
   mentionTriggerIndex,
   isNewCommand,
   movePromptHistory,
@@ -48,7 +49,7 @@ type Auto = RunFooterMenuItem & {
 type SlashOption = RunFooterMenuItem & {
   kind: "slash"
   name: string
-  action?: "skill-menu" | "editor"
+  action?: "skill-menu" | "editor" | "loop-menu"
 }
 
 type PromptOption = Auto | SlashOption
@@ -76,6 +77,7 @@ type PromptInput = {
   onExitRequest?: () => boolean
   onExit: () => void
   onSkillMenu: () => void
+  onLoopMenu: () => void
   onRows: (rows: number) => void
   onStatus: (text: string) => void
 }
@@ -415,6 +417,13 @@ export function createPromptState(input: PromptInput): PromptState {
         name: "editor",
         display: "/editor",
         description: "compose in your external editor",
+      } satisfies SlashOption,
+      {
+        kind: "slash",
+        action: "loop-menu" as const,
+        name: "loop",
+        display: "/loop",
+        description: "manage scheduled loops",
       } satisfies SlashOption,
       { kind: "slash", name: "new", display: "/new", description: "start a new session" } satisfies SlashOption,
       { kind: "slash", name: "exit", display: "/exit", description: "close OpenCode" } satisfies SlashOption,
@@ -859,6 +868,12 @@ export function createPromptState(input: PromptInput): PromptState {
         return
       }
 
+      if (next.action === "loop-menu") {
+        cancelAutocomplete()
+        input.onLoopMenu()
+        return
+      }
+
       const cursor = area.cursorOffset
       const head = slashHead(area.plainText)
       const local = !shell() && (next.name === "new" || next.name === "exit")
@@ -1182,6 +1197,11 @@ export function createPromptState(input: PromptInput): PromptState {
     const command = next.mode === "shell" ? undefined : selectedCommand(next.text, next.command)
     if (!command && next.mode !== "shell" && isExitCommand(next.text)) {
       input.onExit()
+      return
+    }
+
+    if (!command && next.mode !== "shell" && isLoopCommand(next.text)) {
+      input.onLoopMenu()
       return
     }
 

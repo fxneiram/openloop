@@ -184,6 +184,7 @@ export type FooterPromptRoute =
   | { type: "skill" }
   | { type: "model" }
   | { type: "variant" }
+  | { type: "loop" }
 
 export type FooterSubagentTab = {
   sessionID: string
@@ -347,4 +348,5 @@ export type FooterApi = {
   idle(): Promise<void>
   close(): void
   destroy(): void
+  updateLoops(loops: { name: string; cron: string; enabled: boolean; group?: string; prompt?: string }[]): void
 }

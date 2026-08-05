@@ -22,6 +22,7 @@ import {
   RunVariantSelectBody,
 } from "./footer.command"
 import { FOOTER_MENU_ROWS, RunFooterMenu } from "./footer.menu"
+import { RunLoopSelectBody, type RunLoopInfo } from "./footer.loop"
 import { RunFooterSubagentBody } from "./footer.subagent"
 import { RunPromptBody, createPromptState } from "./footer.prompt"
 import { RunPermissionBody } from "./footer.permission"
@@ -86,6 +87,7 @@ type RunFooterViewProps = {
   view?: () => FooterView
   subagent?: () => FooterSubagentState
   queuedPrompts?: () => FooterQueuedPrompt[]
+  loops?: () => RunLoopInfo[]
   theme: () => RunTheme
   diffStyle?: RunDiffStyle
   tuiConfig: RunTuiConfig
@@ -111,6 +113,7 @@ type RunFooterViewProps = {
   onStatus: (text: string) => void
   onSubagentSelect?: (sessionID: string | undefined) => void
   onQueuedRemove: (messageID: string) => Promise<boolean>
+  onLoopRun: (name: string) => void
 }
 
 export { TEXTAREA_MIN_ROWS, TEXTAREA_MAX_ROWS } from "./footer.prompt"
@@ -142,6 +145,7 @@ export function RunFooterView(props: RunFooterViewProps) {
   const skilling = createMemo(() => active().type === "prompt" && route().type === "skill")
   const modeling = createMemo(() => active().type === "prompt" && route().type === "model")
   const varianting = createMemo(() => active().type === "prompt" && route().type === "variant")
+  const looping = createMemo(() => active().type === "prompt" && route().type === "loop")
   const panel = createMemo(
     () =>
       active().type === "permission" ||
@@ -151,7 +155,8 @@ export function RunFooterView(props: RunFooterViewProps) {
       commanding() ||
       skilling() ||
       modeling() ||
-      varianting(),
+      varianting() ||
+      looping(),
   )
   const selected = createMemo(() => {
     const current = route()
@@ -326,6 +331,11 @@ export function RunFooterView(props: RunFooterViewProps) {
     props.onSubagentSelect?.(undefined)
   }
 
+  const openLoop = () => {
+    setRoute({ type: "loop" })
+    props.onSubagentSelect?.(undefined)
+  }
+
   const closePanel = () => {
     setRoute({ type: "composer" })
   }
@@ -377,6 +387,7 @@ export function RunFooterView(props: RunFooterViewProps) {
     onExitRequest: props.onExitRequest,
     onExit: props.onExit,
     onSkillMenu: openSkillMenu,
+    onLoopMenu: openLoop,
     onRows: props.onRows,
     onStatus: props.onStatus,
   })
@@ -604,6 +615,7 @@ export function RunFooterView(props: RunFooterViewProps) {
       current.type !== "skill" &&
       current.type !== "model" &&
       current.type !== "variant" &&
+      current.type !== "loop" &&
       current.type !== "queued-menu" &&
       current.type !== "subagent-menu"
     ) {
@@ -732,6 +744,7 @@ export function RunFooterView(props: RunFooterViewProps) {
                               composer.submitText("/new")
                               closePanel()
                             }}
+                            onLoop={openLoop}
                             onExit={props.onExit}
                           />
                         </Match>
@@ -773,6 +786,17 @@ export function RunFooterView(props: RunFooterViewProps) {
                             onClose={closePanel}
                             onSelect={(variant) => {
                               props.onVariantSelect(variant)
+                              closePanel()
+                            }}
+                          />
+                        </Match>
+                        <Match when={looping()}>
+                          <RunLoopSelectBody
+                            theme={theme}
+                            loops={props.loops ?? (() => [])}
+                            onClose={closePanel}
+                            onRun={(name) => {
+                              props.onLoopRun(name)
                               closePanel()
                             }}
                           />
