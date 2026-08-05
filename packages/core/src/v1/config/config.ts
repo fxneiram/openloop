@@ -10,6 +10,7 @@ import { ConfigCommandV1 } from "./command"
 import { ConfigFormatterV1 } from "./formatter"
 import { ConfigLayoutV1 } from "./layout"
 import { ConfigLSPV1 } from "./lsp"
+import { ConfigLoopV1 } from "./loop"
 import { ConfigMCPV1 } from "./mcp"
 import { ConfigPermissionV1 } from "./permission"
 import { ConfigPluginV1 } from "./plugin"
@@ -145,6 +146,9 @@ export const Info = Schema.Struct({
   ).annotate({
     description:
       "Thresholds for truncating tool output. When output exceeds either limit, the full text is written to the truncation directory and a preview is returned.",
+  }),
+  loop: Schema.optional(Schema.Record(Schema.String, ConfigLoopV1.Info)).annotate({
+    description: "Scheduled loops that run prompts periodically using cron expressions",
   }),
   compaction: Schema.optional(
     Schema.Struct({

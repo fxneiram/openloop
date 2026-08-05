@@ -2,6 +2,7 @@ export * as ConfigMigrateV1 from "./migrate"
 
 import { ConfigV1 } from "./config"
 import { ConfigAgentV1 } from "./agent"
+import { ConfigLoopV1 } from "./loop"
 import { ConfigMCPV1 } from "./mcp"
 import { ConfigPermissionV1 } from "./permission"
 import { ConfigProviderV1 } from "./provider"
@@ -68,7 +69,19 @@ export function migrate(info: typeof ConfigV1.Info.Type) {
     ),
     experimental: info.experimental?.policies && { policies: info.experimental.policies },
     providers: providers(info.provider),
+    loop: loops(info as typeof ConfigV1.Info.Type & { loop?: Record<string, typeof ConfigLoopV1.Info.Type> }),
   }
+}
+
+function loops(
+  info: typeof ConfigV1.Info.Type & { loop?: Record<string, typeof ConfigLoopV1.Info.Type> },
+) {
+  if (!info.loop) return undefined
+  const result: Record<string, typeof ConfigLoopV1.Info.Type> = {}
+  for (const [name, value] of Object.entries(info.loop)) {
+    result[name] = value
+  }
+  return result
 }
 
 function permissions(info?: ConfigPermissionV1.Info, tools?: Readonly<Record<string, boolean>>) {
