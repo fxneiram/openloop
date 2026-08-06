@@ -208,7 +208,7 @@ export const Definitions = {
   "dialog.select.submit": keybind("return", "Submit selected dialog item"),
   "dialog.prompt.submit": keybind("return", "Submit dialog prompt"),
   "dialog.mcp.toggle": keybind("space", "Toggle MCP in MCP dialog"),
-  "dialog.loop.create": keybind("ctrl+n", "Create new loop"),
+  "dialog.loop.create": keybind("ctrl+shift+n", "Create new loop"),
   "dialog.loop.run": keybind("ctrl+r", "Run loop"),
   "dialog.loop.delete": keybind("ctrl+x", "Delete loop"),
   "dialog.move_session.new": keybind("ctrl+m", "New project copy"),
