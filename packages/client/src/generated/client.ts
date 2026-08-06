@@ -112,6 +112,10 @@ import type {
   ProjectCopiesRemoveOutput,
   ProjectCopiesRefreshInput,
   ProjectCopiesRefreshOutput,
+  ServerLoopListInput,
+  ServerLoopListOutput,
+  ServerLoopRunInput,
+  ServerLoopRunOutput,
 } from "./types"
 import { ClientError } from "./client-error"
 
@@ -980,6 +984,33 @@ export function make(options: ClientOptions) {
             method: "POST",
             path: `/experimental/project/${encodeURIComponent(input.projectID)}/copy/refresh`,
             query: { location: input["location"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+    },
+    "server.loop": {
+      list: (input?: ServerLoopListInput, requestOptions?: RequestOptions) =>
+        request<ServerLoopListOutput>(
+          {
+            method: "GET",
+            path: `/experimental/loop`,
+            query: { location: input?.["location"] },
+            successStatus: 200,
+            declaredStatuses: [400, 401],
+            empty: false,
+          },
+          requestOptions,
+        ),
+      run: (input: ServerLoopRunInput, requestOptions?: RequestOptions) =>
+        request<ServerLoopRunOutput>(
+          {
+            method: "POST",
+            path: `/experimental/loop/run`,
+            query: { location: input["location"] },
+            body: { name: input["name"] },
             successStatus: 204,
             declaredStatuses: [400, 401],
             empty: true,

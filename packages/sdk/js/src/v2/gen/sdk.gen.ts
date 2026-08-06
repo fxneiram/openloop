@@ -297,6 +297,10 @@ import type {
   V2IntegrationListResponses,
   V2LocationGetErrors,
   V2LocationGetResponses,
+  V2LoopListErrors,
+  V2LoopListResponses,
+  V2LoopRunErrors,
+  V2LoopRunResponses,
   V2ModelListErrors,
   V2ModelListResponses,
   V2PermissionRequestListErrors,
@@ -6987,6 +6991,58 @@ export class ProjectCopy2 extends HeyApiClient {
   }
 }
 
+export class Loop extends HeyApiClient {
+  public list<ThrowOnError extends boolean = false>(
+    parameters?: {
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams([parameters], [{ args: [{ in: "query", key: "location" }] }])
+    return (options?.client ?? this.client).get<V2LoopListResponses, V2LoopListErrors, ThrowOnError>({
+      url: "/experimental/loop",
+      ...options,
+      ...params,
+    })
+  }
+
+  public run<ThrowOnError extends boolean = false>(
+    parameters?: {
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+      name?: string
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "location" },
+            { in: "body", key: "name" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<V2LoopRunResponses, V2LoopRunErrors, ThrowOnError>({
+      url: "/experimental/loop/run",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+}
+
 export class V2 extends HeyApiClient {
   private _health?: Health
   get health(): Health {
@@ -7071,6 +7127,11 @@ export class V2 extends HeyApiClient {
   private _projectCopy?: ProjectCopy2
   get projectCopy(): ProjectCopy2 {
     return (this._projectCopy ??= new ProjectCopy2({ client: this.client }))
+  }
+
+  private _loop?: Loop
+  get loop(): Loop {
+    return (this._loop ??= new Loop({ client: this.client }))
   }
 }
 

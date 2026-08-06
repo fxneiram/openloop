@@ -101,6 +101,10 @@ export type ProjectCopyError = {
 export const isProjectCopyError = (value: unknown): value is ProjectCopyError =>
   typeof value === "object" && value !== null && "name" in value && value["name"] === "ProjectCopyError"
 
+export type LoopError = { readonly name: "LoopError"; readonly data: { readonly message: string } }
+export const isLoopError = (value: unknown): value is LoopError =>
+  typeof value === "object" && value !== null && "name" in value && value["name"] === "LoopError"
+
 export type HealthGetOutput = { readonly healthy: true }
 
 export type LocationGetInput = {
@@ -2805,3 +2809,35 @@ export type ProjectCopiesRefreshInput = {
 }
 
 export type ProjectCopiesRefreshOutput = void
+
+export type ServerLoopListInput = {
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+}
+
+export type ServerLoopListOutput = {
+  readonly [x: string]: {
+    readonly group?: string | undefined
+    readonly model?: string | undefined
+    readonly agent?: string | undefined
+    readonly prompt: string
+    readonly directory?: string | undefined
+    readonly cron: string
+    readonly timezone?: "local" | "UTC" | undefined
+    readonly on_conflict?: "skip" | "stop_and_restart" | "queue" | undefined
+    readonly enabled?: boolean | undefined
+    readonly max_queue_length?: number | undefined
+    readonly timeout?: number | undefined
+    readonly max_failures?: number | undefined
+  }
+}
+
+export type ServerLoopRunInput = {
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+  readonly name: { readonly name: string }["name"]
+}
+
+export type ServerLoopRunOutput = void
