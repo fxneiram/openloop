@@ -1,6 +1,6 @@
 import { TextAttributes } from "@opentui/core"
 import { DialogSelect, type DialogSelectOption } from "../ui/dialog-select"
-import { createResource, createMemo, createSignal } from "solid-js"
+import { createResource, createMemo, createSignal, Show } from "solid-js"
 import { useDialog } from "../ui/dialog"
 import { useSDK } from "../context/sdk"
 import { useTheme } from "../context/theme"
@@ -19,6 +19,7 @@ export function DialogLoop(props: DialogLoopProps) {
   dialog.setSize("large")
 
   const [loadError, setLoadError] = createSignal<unknown>()
+  const [actionError, setActionError] = createSignal<string>()
   const [running, setRunning] = createSignal<string>()
 
   const [loops, { refetch }] = createResource(() =>
@@ -74,13 +75,14 @@ export function DialogLoop(props: DialogLoopProps) {
       title: "run",
       onTrigger: async (option: DialogSelectOption<string>) => {
         if (running()) return
+        setActionError(undefined)
         setRunning(option.value)
         props.onRun?.(option.value, loops()?.[option.value] ?? { prompt: "", cron: "" })
         try {
           await sdk.client.v2.loop.run({ name: option.value }, { throwOnError: true })
           dialog.clear()
         } catch (error) {
-          setLoadError(error)
+          setActionError(errorMessage(error))
         } finally {
           setRunning(undefined)
         }
@@ -90,11 +92,12 @@ export function DialogLoop(props: DialogLoopProps) {
       command: "dialog.loop.delete",
       title: "delete",
       onTrigger: async (option: DialogSelectOption<string>) => {
+        setActionError(undefined)
         try {
           await sdk.client.v2.loop.delete({ name: option.value }, { throwOnError: true })
           refetch()
         } catch (error) {
-          setLoadError(error)
+          setActionError(errorMessage(error))
         }
       },
     },
@@ -102,13 +105,14 @@ export function DialogLoop(props: DialogLoopProps) {
 
   async function runLoop(name: string, loop: ConfigLoopV1.Info) {
     if (running()) return
+    setActionError(undefined)
     setRunning(name)
     props.onRun?.(name, loop)
     try {
       await sdk.client.v2.loop.run({ name }, { throwOnError: true })
       dialog.clear()
     } catch (error) {
-      setLoadError(error)
+      setActionError(errorMessage(error))
     } finally {
       setRunning(undefined)
     }
@@ -122,6 +126,11 @@ export function DialogLoop(props: DialogLoopProps) {
       actions={actions()}
       renderFilter={!showError()}
       locked={showError() || running() !== undefined}
+      footer={
+        <Show when={actionError()}>
+          <text fg={theme.error}>{actionError()}</text>
+        </Show>
+      }
       emptyView={
         showError() ? (
           <box paddingLeft={4} paddingRight={4}>
