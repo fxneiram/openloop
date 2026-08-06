@@ -200,7 +200,7 @@ export const Definitions = {
   history_next: keybind("down", "Next history item"),
 
   "dialog.select.prev": keybind("up,ctrl+p", "Move to previous dialog item"),
-  "dialog.select.next": keybind("down,ctrl+n", "Move to next dialog item"),
+  "dialog.select.next": keybind("down", "Move to next dialog item"),
   "dialog.select.page_up": keybind("pageup", "Move up one page in dialog"),
   "dialog.select.page_down": keybind("pagedown", "Move down one page in dialog"),
   "dialog.select.home": keybind("home", "Move to first dialog item"),
@@ -208,7 +208,7 @@ export const Definitions = {
   "dialog.select.submit": keybind("return", "Submit selected dialog item"),
   "dialog.prompt.submit": keybind("return", "Submit dialog prompt"),
   "dialog.mcp.toggle": keybind("space", "Toggle MCP in MCP dialog"),
-  "dialog.loop.create": keybind("ctrl+shift+n", "Create new loop"),
+  "dialog.loop.create": keybind("ctrl+n", "Create new loop"),
   "dialog.loop.run": keybind("ctrl+r", "Run loop"),
   "dialog.loop.delete": keybind("ctrl+x", "Delete loop"),
   "dialog.move_session.new": keybind("ctrl+m", "New project copy"),

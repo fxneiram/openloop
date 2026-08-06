@@ -64,6 +64,7 @@ export function DialogLoop(props: DialogLoopProps) {
     {
       command: "dialog.loop.create",
       title: "create",
+      requiresSelection: false,
       onTrigger: () => {
         openCreateDialog()
       },

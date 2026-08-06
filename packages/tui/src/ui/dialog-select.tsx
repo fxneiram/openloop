@@ -43,6 +43,7 @@ export interface DialogSelectProps<T> {
     hidden?: boolean
     disabled?: boolean | ((option: DialogSelectOption<T> | undefined) => boolean)
     onTrigger: (option: DialogSelectOption<T>) => void
+    requiresSelection?: boolean
   }[]
   footerHints?: {
     title: string
@@ -442,8 +443,8 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
             if (isActionDisabled(item)) return
             setStore("input", "keyboard")
             const option = selected()
-            if (!option) return
-            item.onTrigger(option)
+            if (!option && item.requiresSelection !== false) return
+            item.onTrigger(option!)
           },
         })),
       ],
@@ -505,8 +506,8 @@ export function DialogSelect<T>(props: DialogSelectProps<T>) {
     if (!item || !isActionItem(item) || isActionDisabled(item)) return
     setStore("input", "keyboard")
     const option = selected()
-    if (!option) return
-    item.onTrigger(option)
+    if (!option && item.requiresSelection !== false) return
+    item.onTrigger(option!)
   }
 
   function isActionItem(item: VisibleAction): item is Action & { label: string } {
