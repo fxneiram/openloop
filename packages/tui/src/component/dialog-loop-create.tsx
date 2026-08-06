@@ -1,4 +1,4 @@
-import { TextAttributes, type TextareaRenderable } from "@opentui/core"
+import { TextAttributes, type TextareaRenderable, type KeyEvent } from "@opentui/core"
 import { useDialog } from "../ui/dialog"
 import { useSDK } from "../context/sdk"
 import { useTheme } from "../context/theme"
@@ -36,6 +36,22 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
       nameRef.focus()
     }, 1)
   })
+
+  function getFieldRefs() {
+    return [nameRef, promptRef, cronRef, modelRef, agentRef, groupRef]
+  }
+
+  function handleTab(e: KeyEvent) {
+    if (e.name !== "tab") return
+    e.preventDefault()
+    const fields = getFieldRefs()
+    const current = fields.findIndex((f) => f?.focused)
+    if (current === -1) return
+    const next = e.shift
+      ? (current - 1 + fields.length) % fields.length
+      : (current + 1) % fields.length
+    fields[next]?.focus()
+  }
 
   const [nameTarget, setNameTarget] = createSignal<TextareaRenderable>()
 
@@ -109,6 +125,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           textColor={theme.text}
           focusedTextColor={theme.text}
           cursorColor={theme.text}
+          onKeyDown={handleTab}
         />
 
         <text fg={theme.text}>
@@ -122,6 +139,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           textColor={theme.text}
           focusedTextColor={theme.text}
           cursorColor={theme.text}
+          onKeyDown={handleTab}
         />
 
         <text fg={theme.text}>
@@ -135,6 +153,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           textColor={theme.text}
           focusedTextColor={theme.text}
           cursorColor={theme.text}
+          onKeyDown={handleTab}
         />
 
         <text fg={theme.text}>Model: <span style={{ fg: theme.textMuted }}>(optional)</span></text>
@@ -146,6 +165,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           textColor={theme.text}
           focusedTextColor={theme.text}
           cursorColor={theme.text}
+          onKeyDown={handleTab}
         />
 
         <text fg={theme.text}>Agent: <span style={{ fg: theme.textMuted }}>(optional)</span></text>
@@ -157,6 +177,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           textColor={theme.text}
           focusedTextColor={theme.text}
           cursorColor={theme.text}
+          onKeyDown={handleTab}
         />
 
         <text fg={theme.text}>Group: <span style={{ fg: theme.textMuted }}>(optional)</span></text>
@@ -168,6 +189,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           textColor={theme.text}
           focusedTextColor={theme.text}
           cursorColor={theme.text}
+          onKeyDown={handleTab}
         />
       </box>
 
