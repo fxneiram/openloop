@@ -113,6 +113,12 @@ export type Error = NotFoundError | MessageDecodeError | OperationUnavailableErr
 export interface Interface {
   readonly list: (input?: ListInput) => Effect.Effect<SessionSchema.Info[]>
   readonly create: (input: CreateInput) => Effect.Effect<SessionSchema.Info>
+  readonly getOrCreateByName: (input: {
+    name: string
+    directory?: string
+    agent?: string
+    model?: ModelV2.Ref
+  }) => Effect.Effect<SessionSchema.Info>
   readonly get: (sessionID: SessionSchema.ID) => Effect.Effect<SessionSchema.Info, NotFoundError>
   readonly messages: (input: {
     sessionID: SessionSchema.ID
@@ -264,6 +270,47 @@ const layer = Layer.effect(
         const session = yield* store.get(sessionID)
         if (!session) return yield* new NotFoundError({ sessionID })
         return session
+      }),
+      getOrCreateByName: Effect.fn("V2Session.getOrCreateByName")(function* (input) {
+        const directory = input.directory ?? process.cwd()
+        const title = `[loop] ${input.name}`
+        const metadata = { loop: input.name }
+        const project = yield* projects.resolve(AbsolutePath.make(directory))
+        const existing = yield* db
+          .select()
+          .from(SessionTable)
+          .where(
+            and(
+              eq(SessionTable.project_id, project.id),
+              eq(SessionTable.directory, directory),
+            ),
+          )
+          .orderBy(desc(SessionTable.time_created))
+          .limit(1)
+          .get()
+          .pipe(Effect.orDie)
+        if (existing) {
+          const parsed = fromRow(existing)
+          const rowMetadata = existing.metadata as Record<string, unknown> | undefined
+          const loopMeta = rowMetadata?.loop
+          if (loopMeta === input.name || parsed.title === title) {
+            return parsed
+          }
+        }
+        const location = Location.Ref.make({ directory: AbsolutePath.make(directory) })
+        const session = yield* result.create({
+          agent: input.agent ? AgentV2.ID.make(input.agent) : undefined,
+          model: input.model,
+          location,
+        })
+        const now = yield* DateTime.now
+        yield* db
+          .update(SessionTable)
+          .set({ title, metadata })
+          .where(eq(SessionTable.id, session.id))
+          .run()
+          .pipe(Effect.orDie)
+        return yield* result.get(session.id).pipe(Effect.orDie)
       }),
       list: Effect.fn("V2Session.list")(function* (input = {}) {
         const direction = input.anchor?.direction ?? "next"

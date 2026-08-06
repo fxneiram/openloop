@@ -101,6 +101,10 @@ export type ProjectCopyError = {
 export const isProjectCopyError = (value: unknown): value is ProjectCopyError =>
   typeof value === "object" && value !== null && "name" in value && value["name"] === "ProjectCopyError"
 
+export type LoopError = { readonly name: "LoopError"; readonly data: { readonly message: string } }
+export const isLoopError = (value: unknown): value is LoopError =>
+  typeof value === "object" && value !== null && "name" in value && value["name"] === "LoopError"
+
 export type HealthGetOutput = { readonly healthy: true }
 
 export type LocationGetInput = {
@@ -2805,3 +2809,129 @@ export type ProjectCopiesRefreshInput = {
 }
 
 export type ProjectCopiesRefreshOutput = void
+
+export type LoopsListInput = {
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+}
+
+export type LoopsListOutput = {
+  readonly [x: string]: {
+    readonly group?: string | undefined
+    readonly model?: string | undefined
+    readonly agent?: string | undefined
+    readonly prompt: string
+    readonly directory?: string | undefined
+    readonly cron: string
+    readonly timezone?: "local" | "UTC" | undefined
+    readonly on_conflict?: "skip" | "stop_and_restart" | "queue" | undefined
+    readonly enabled?: boolean | undefined
+    readonly max_queue_length?: number | undefined
+    readonly timeout?: number | undefined
+    readonly max_failures?: number | undefined
+  }
+}
+
+export type LoopsRunInput = {
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+  readonly name: { readonly name: string }["name"]
+}
+
+export type LoopsRunOutput = void
+
+export type LoopsCreateInput = {
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+  readonly name: {
+    readonly name: string
+    readonly config: {
+      readonly group?: string | undefined
+      readonly model?: string | undefined
+      readonly agent?: string | undefined
+      readonly prompt: string
+      readonly directory?: string | undefined
+      readonly cron: string
+      readonly timezone?: "local" | "UTC" | undefined
+      readonly on_conflict?: "skip" | "stop_and_restart" | "queue" | undefined
+      readonly enabled?: boolean | undefined
+      readonly max_queue_length?: number | undefined
+      readonly timeout?: number | undefined
+      readonly max_failures?: number | undefined
+    }
+  }["name"]
+  readonly config: {
+    readonly name: string
+    readonly config: {
+      readonly group?: string | undefined
+      readonly model?: string | undefined
+      readonly agent?: string | undefined
+      readonly prompt: string
+      readonly directory?: string | undefined
+      readonly cron: string
+      readonly timezone?: "local" | "UTC" | undefined
+      readonly on_conflict?: "skip" | "stop_and_restart" | "queue" | undefined
+      readonly enabled?: boolean | undefined
+      readonly max_queue_length?: number | undefined
+      readonly timeout?: number | undefined
+      readonly max_failures?: number | undefined
+    }
+  }["config"]
+}
+
+export type LoopsCreateOutput = void
+
+export type LoopsUpdateInput = {
+  readonly name: { readonly name: string }["name"]
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+  readonly config: {
+    readonly config: {
+      readonly group?: string | undefined
+      readonly model?: string | undefined
+      readonly agent?: string | undefined
+      readonly prompt: string
+      readonly directory?: string | undefined
+      readonly cron: string
+      readonly timezone?: "local" | "UTC" | undefined
+      readonly on_conflict?: "skip" | "stop_and_restart" | "queue" | undefined
+      readonly enabled?: boolean | undefined
+      readonly max_queue_length?: number | undefined
+      readonly timeout?: number | undefined
+      readonly max_failures?: number | undefined
+    }
+  }["config"]
+}
+
+export type LoopsUpdateOutput = void
+
+export type LoopsDeleteInput = {
+  readonly name: { readonly name: string }["name"]
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+}
+
+export type LoopsDeleteOutput = void
+
+export type LoopsEnableInput = {
+  readonly name: { readonly name: string }["name"]
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+}
+
+export type LoopsEnableOutput = void
+
+export type LoopsDisableInput = {
+  readonly name: { readonly name: string }["name"]
+  readonly location?: {
+    readonly location?: { readonly directory?: string | undefined; readonly workspace?: string | undefined } | undefined
+  }["location"]
+}
+
+export type LoopsDisableOutput = void

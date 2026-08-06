@@ -21,6 +21,38 @@ import { createRuntimeLifecycle } from "./runtime.lifecycle"
 import { trace } from "./trace"
 import { cycleVariant, formatModelLabel, resolveSavedVariant, resolveVariant, saveVariant } from "./variant.shared"
 import type { LocalReplayAnchor, LocalReplayRow, RunInput, RunPrompt, RunProvider, StreamCommit } from "./types"
+import { ConfigV1 } from "@opencode-ai/core/v1/config/config"
+import { ConfigMigrateV1 } from "@opencode-ai/core/v1/config/migrate"
+import type { ConfigLoopV1 } from "@opencode-ai/core/v1/config/loop"
+
+async function loadLoops(): Promise<Record<string, ConfigLoopV1.Info>> {
+  const { parse } = await import("jsonc-parser")
+  const fs = await import("fs")
+  const path = await import("path")
+  const names = ["openloop.json", "openloop.jsonc", "opencode.json", "opencode.jsonc"]
+  const cwd = process.cwd()
+  for (const name of names) {
+    const filepath = path.join(cwd, name)
+    if (!fs.existsSync(filepath)) continue
+    const text = fs.readFileSync(filepath, "utf-8")
+    const errors: any[] = []
+    const input = parse(text, errors, { allowTrailingComma: true })
+    if (errors.length) continue
+    if (ConfigMigrateV1.isV1(input)) {
+      const decoded = ConfigV1.Info.pipe(
+        (s) => (s as any).decodeUnknownOption?.(input) ?? { _tag: "None" },
+      )
+      if (decoded && decoded._tag === "Some") {
+        const migrated = ConfigMigrateV1.migrate(decoded.value)
+        return (migrated as any).loop ?? {}
+      }
+    }
+    if (input && typeof input === "object" && "loop" in input) {
+      return (input as any).loop ?? {}
+    }
+  }
+  return {}
+}
 
 /** @internal Exported for testing */
 export { pickVariant, resolveVariant } from "./variant.shared"
@@ -362,6 +394,37 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
         sessionID,
       })
     },
+    onLoopRun: (name) => {
+      void loadLoops().then(async (loops) => {
+        const cfg = loops[name]
+        if (!cfg) {
+          footer.event({
+            type: "stream.patch",
+            patch: { status: `loop not found: ${name}` },
+          })
+          return
+        }
+
+        footer.event({
+          type: "stream.patch",
+          patch: { status: `starting loop "${name}"` },
+        })
+        try {
+          const { AppRuntime } = await import("@/effect/app-runtime")
+          const { LoopScheduler } = await import("@opencode-ai/core/loop/scheduler")
+          await AppRuntime.runPromise(LoopScheduler.Service.use((scheduler) => scheduler.runNow(name, cfg)))
+          footer.event({
+            type: "stream.patch",
+            patch: { status: `loop "${name}" iteration started` },
+          })
+        } catch (error) {
+          footer.event({
+            type: "stream.patch",
+            patch: { status: `loop "${name}" failed: ${error instanceof Error ? error.message : String(error)}` },
+          })
+        }
+      })
+    },
   })
   const footer = shell.footer
   const rememberLocal = (commit: StreamCommit, after?: LocalReplayAnchor) => {
@@ -399,9 +462,31 @@ async function runInteractiveRuntime(input: RunRuntimeInput, deps: RunRuntimeDep
     })
   }
 
+  const loadLoopsForFooter = async (): Promise<void> => {
+    if (footer.isClosed) {
+      return
+    }
+
+    const loops = await loadLoops()
+    if (footer.isClosed) {
+      return
+    }
+
+    footer.updateLoops(
+      Object.entries(loops).map(([name, cfg]) => ({
+        name,
+        cron: cfg.cron,
+        enabled: cfg.enabled ?? true,
+        group: cfg.group,
+        prompt: cfg.prompt,
+      })),
+    )
+  }
+
   void footer
     .idle()
     .then(loadCatalog)
+    .then(loadLoopsForFooter)
     .catch(() => {})
 
   if (Flag.OPENCODE_SHOW_TTFD) {

@@ -21,6 +21,7 @@ type CommandEntry =
   | (PanelEntry & { action: "variant.cycle" })
   | (PanelEntry & { action: "variant.list" })
   | (PanelEntry & { action: "slash"; name: string })
+  | (PanelEntry & { action: "loop" })
   | (PanelEntry & { action: "exit" })
 
 type ModelEntry = PanelEntry & {
@@ -201,7 +202,7 @@ function match<T extends PanelEntry>(query: string, entries: T[]) {
     .map((item) => item.obj)
 }
 
-function PanelShell(props: {
+export function PanelShell(props: {
   title: string
   countVisible?: boolean
   query: string
@@ -348,6 +349,7 @@ export function RunCommandMenuBody(props: {
   onVariantCycle: () => void
   onCommand: (name: string) => void
   onNew: () => void
+  onLoop: () => void
   onExit: () => void
 }) {
   let field: InputRenderable | undefined
@@ -355,7 +357,7 @@ export function RunCommandMenuBody(props: {
   const skills = createMemo(() => (props.commands() ?? []).filter((item) => item.source === "skill"))
   const activeSubagentCount = createMemo(() => props.subagents().filter((item) => item.status === "running").length)
   const entries = createMemo<CommandEntry[]>(() => {
-    const builtins = ["editor", "new"]
+    const builtins = ["editor", "new", "loop"]
     const session: CommandEntry[] = [
       {
         action: "editor",
@@ -386,6 +388,13 @@ export function RunCommandMenuBody(props: {
         display: "New session",
         footer: "/new",
         keywords: "new session clear",
+      },
+      {
+        action: "loop",
+        category: "Session",
+        display: "Loops",
+        footer: "/loop",
+        keywords: "loop loops scheduled cron",
       },
     ]
     const prompt: CommandEntry[] =
@@ -506,6 +515,11 @@ export function RunCommandMenuBody(props: {
 
     if (item.action === "exit") {
       props.onExit()
+      return
+    }
+
+    if (item.action === "loop") {
+      props.onLoop()
       return
     }
 

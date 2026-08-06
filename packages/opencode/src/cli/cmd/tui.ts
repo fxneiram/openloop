@@ -270,6 +270,9 @@ export const TuiThreadCommand = cmd({
         const { Effect } = await import("effect")
         const { run } = await import("../tui/layer")
         const { createLegacyTuiPluginHost } = await import("@/plugin/tui/runtime")
+        const { AppRuntime } = await import("@/effect/app-runtime")
+        const { startScheduler } = await import("@/loop/startup")
+        AppRuntime.runFork(startScheduler())
         await Effect.runPromise(
           run({
             url: transport.url,

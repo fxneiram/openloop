@@ -401,6 +401,7 @@ function footer(fn?: (commit: StreamCommit) => void) {
     destroy() {
       closed = true
     },
+    updateLoops() {},
   }
 
   return {

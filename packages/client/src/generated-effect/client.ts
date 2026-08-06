@@ -681,6 +681,86 @@ const adaptGroup17 = (raw: RawClient["server.projectCopy"]) => ({
   refresh: Endpoint17_2(raw),
 })
 
+type Endpoint18_0Request = Parameters<RawClient["server.loop"]["loop.list"]>[0]
+type Endpoint18_0Input = { readonly location?: Endpoint18_0Request["query"]["location"] }
+const Endpoint18_0 = (raw: RawClient["server.loop"]) => (input?: Endpoint18_0Input) =>
+  raw["loop.list"]({ query: { location: input?.["location"] } }).pipe(Effect.mapError(mapClientError))
+
+type Endpoint18_1Request = Parameters<RawClient["server.loop"]["loop.run"]>[0]
+type Endpoint18_1Input = {
+  readonly location?: Endpoint18_1Request["query"]["location"]
+  readonly name: Endpoint18_1Request["payload"]["name"]
+}
+const Endpoint18_1 = (raw: RawClient["server.loop"]) => (input: Endpoint18_1Input) =>
+  raw["loop.run"]({ query: { location: input["location"] }, payload: { name: input["name"] } }).pipe(
+    Effect.mapError(mapClientError),
+  )
+
+type Endpoint18_2Request = Parameters<RawClient["server.loop"]["loop.create"]>[0]
+type Endpoint18_2Input = {
+  readonly location?: Endpoint18_2Request["query"]["location"]
+  readonly name: Endpoint18_2Request["payload"]["name"]
+  readonly config: Endpoint18_2Request["payload"]["config"]
+}
+const Endpoint18_2 = (raw: RawClient["server.loop"]) => (input: Endpoint18_2Input) =>
+  raw["loop.create"]({
+    query: { location: input["location"] },
+    payload: { name: input["name"], config: input["config"] },
+  }).pipe(Effect.mapError(mapClientError))
+
+type Endpoint18_3Request = Parameters<RawClient["server.loop"]["loop.update"]>[0]
+type Endpoint18_3Input = {
+  readonly name: Endpoint18_3Request["params"]["name"]
+  readonly location?: Endpoint18_3Request["query"]["location"]
+  readonly config: Endpoint18_3Request["payload"]["config"]
+}
+const Endpoint18_3 = (raw: RawClient["server.loop"]) => (input: Endpoint18_3Input) =>
+  raw["loop.update"]({
+    params: { name: input["name"] },
+    query: { location: input["location"] },
+    payload: { config: input["config"] },
+  }).pipe(Effect.mapError(mapClientError))
+
+type Endpoint18_4Request = Parameters<RawClient["server.loop"]["loop.delete"]>[0]
+type Endpoint18_4Input = {
+  readonly name: Endpoint18_4Request["params"]["name"]
+  readonly location?: Endpoint18_4Request["query"]["location"]
+}
+const Endpoint18_4 = (raw: RawClient["server.loop"]) => (input: Endpoint18_4Input) =>
+  raw["loop.delete"]({ params: { name: input["name"] }, query: { location: input["location"] } }).pipe(
+    Effect.mapError(mapClientError),
+  )
+
+type Endpoint18_5Request = Parameters<RawClient["server.loop"]["loop.enable"]>[0]
+type Endpoint18_5Input = {
+  readonly name: Endpoint18_5Request["params"]["name"]
+  readonly location?: Endpoint18_5Request["query"]["location"]
+}
+const Endpoint18_5 = (raw: RawClient["server.loop"]) => (input: Endpoint18_5Input) =>
+  raw["loop.enable"]({ params: { name: input["name"] }, query: { location: input["location"] } }).pipe(
+    Effect.mapError(mapClientError),
+  )
+
+type Endpoint18_6Request = Parameters<RawClient["server.loop"]["loop.disable"]>[0]
+type Endpoint18_6Input = {
+  readonly name: Endpoint18_6Request["params"]["name"]
+  readonly location?: Endpoint18_6Request["query"]["location"]
+}
+const Endpoint18_6 = (raw: RawClient["server.loop"]) => (input: Endpoint18_6Input) =>
+  raw["loop.disable"]({ params: { name: input["name"] }, query: { location: input["location"] } }).pipe(
+    Effect.mapError(mapClientError),
+  )
+
+const adaptGroup18 = (raw: RawClient["server.loop"]) => ({
+  list: Endpoint18_0(raw),
+  run: Endpoint18_1(raw),
+  create: Endpoint18_2(raw),
+  update: Endpoint18_3(raw),
+  delete: Endpoint18_4(raw),
+  enable: Endpoint18_5(raw),
+  disable: Endpoint18_6(raw),
+})
+
 const adaptClient = (raw: RawClient) => ({
   health: adaptGroup0(raw["server.health"]),
   location: adaptGroup1(raw["server.location"]),
@@ -700,6 +780,7 @@ const adaptClient = (raw: RawClient) => ({
   questions: adaptGroup15(raw["server.question"]),
   references: adaptGroup16(raw["server.reference"]),
   projectCopies: adaptGroup17(raw["server.projectCopy"]),
+  loops: adaptGroup18(raw["server.loop"]),
 })
 
 export const make = (options?: { readonly baseUrl?: URL | string }) =>

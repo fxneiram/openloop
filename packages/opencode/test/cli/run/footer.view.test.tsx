@@ -17,6 +17,7 @@ import {
   RunVariantSelectBody,
 } from "@/cli/cmd/run/footer.command"
 import { RunFooterView } from "@/cli/cmd/run/footer.view"
+import { RunLoopSelectBody, type RunLoopInfo } from "@/cli/cmd/run/footer.loop"
 import { RunEntryContent } from "@/cli/cmd/run/scrollback.writer"
 import { RUN_THEME_FALLBACK, type RunTheme } from "@/cli/cmd/run/theme"
 import type {
@@ -215,6 +216,7 @@ async function renderFooter(
           onLayout={() => {}}
           onStatus={() => {}}
           onQueuedRemove={async () => true}
+          onLoopRun={() => {}}
         />
       </OpencodeKeymapProvider>
     )
@@ -385,6 +387,7 @@ test("direct command panel renders grouped command palette", async () => {
           onVariantCycle={() => {}}
           onCommand={() => {}}
           onNew={() => {}}
+          onLoop={() => {}}
           onExit={() => {}}
         />
       </box>
@@ -526,6 +529,7 @@ test("direct command panel shows subagent entry when available", async () => {
           onVariantCycle={() => {}}
           onCommand={() => {}}
           onNew={() => {}}
+          onLoop={() => {}}
           onExit={() => {}}
         />
       </box>
@@ -574,6 +578,7 @@ test("direct command panel keeps completed subagents available", async () => {
           onVariantCycle={() => {}}
           onCommand={() => {}}
           onNew={() => {}}
+          onLoop={() => {}}
           onExit={() => {}}
         />
       </box>
@@ -1004,6 +1009,7 @@ test("direct footer shows editable prompts and additional queued work while runn
           onLayout={() => {}}
           onStatus={() => {}}
           onQueuedRemove={async () => true}
+          onLoopRun={() => {}}
         />
       </OpencodeKeymapProvider>
     )
@@ -1405,6 +1411,79 @@ test("direct variant panel renders current variant selector", async () => {
     expect(frame).not.toContain("┌")
     expect(frame).not.toContain("┃")
     expectPaletteList(list, 1)
+  } finally {
+    app.renderer.destroy()
+  }
+})
+
+test("direct loop panel renders searchable loop list", async () => {
+  const [loops] = createSignal<RunLoopInfo[]>([
+    { name: "daily-report", cron: "0 9 * * *", enabled: true, group: "reports" },
+    { name: "cleanup", cron: "0 0 * * 0", enabled: false },
+  ])
+  const runs: string[] = []
+
+  const app = await testRender(
+    () => (
+      <box width={100} height={RUN_COMMAND_PANEL_ROWS}>
+        <RunLoopSelectBody
+          theme={() => RUN_THEME_FALLBACK.footer}
+          loops={loops}
+          onClose={() => {}}
+          onRun={(name) => runs.push(name)}
+        />
+      </box>
+    ),
+    {
+      width: 100,
+      height: RUN_COMMAND_PANEL_ROWS,
+    },
+  )
+
+  try {
+    await app.renderOnce()
+    const frame = app.captureCharFrame()
+
+    expect(frame).toContain("Loops")
+    expect(frame).toContain("daily-report")
+    expect(frame).toContain("cleanup")
+    expect(frame).toContain("cron: 0 9 * * *")
+    expect(frame).toContain("cron: 0 0 * * 0 (disabled)")
+    expect(frame).toContain("reports")
+  } finally {
+    app.renderer.destroy()
+  }
+})
+
+test("direct loop panel calls onRun when selecting a loop", async () => {
+  const [loops] = createSignal<RunLoopInfo[]>([
+    { name: "daily-report", cron: "0 9 * * *", enabled: true },
+  ])
+  const runs: string[] = []
+
+  const app = await testRender(
+    () => (
+      <box width={100} height={RUN_COMMAND_PANEL_ROWS}>
+        <RunLoopSelectBody
+          theme={() => RUN_THEME_FALLBACK.footer}
+          loops={loops}
+          onClose={() => {}}
+          onRun={(name) => runs.push(name)}
+        />
+      </box>
+    ),
+    {
+      width: 100,
+      height: RUN_COMMAND_PANEL_ROWS,
+      kittyKeyboard: true,
+    },
+  )
+
+  try {
+    await app.renderOnce()
+    app.mockInput.pressEnter()
+    await app.renderOnce()
+    expect(runs).toEqual(["daily-report"])
   } finally {
     app.renderer.destroy()
   }

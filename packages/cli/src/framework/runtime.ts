@@ -10,9 +10,9 @@ export type Input<Value> =
       ? Input
       : never
 
-type RuntimeHandler = (input: unknown) => Effect.Effect<void, unknown, Daemon.Service>
+type RuntimeHandler = (input: unknown) => Effect.Effect<void, unknown, any>
 type Loader<Node extends Spec.Any> = () => Promise<{
-  default: (input: Input<Node>) => Effect.Effect<void, any, Daemon.Service>
+  default: (input: Input<Node>) => Effect.Effect<void, any, any>
 }>
 type ProvidedCommand = Command.Command<string, unknown, unknown, unknown, Daemon.Service>
 

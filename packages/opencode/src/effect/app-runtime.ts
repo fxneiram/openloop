@@ -54,6 +54,11 @@ import { EventV2Bridge } from "@/event-v2-bridge"
 import { LayerNode } from "@opencode-ai/core/effect/layer-node"
 import { AppNodeBuilderV1 } from "./app-node-builder-v1"
 import { SessionProjector } from "@opencode-ai/core/session/projector"
+import { LoopScheduler } from "@opencode-ai/core/loop/scheduler"
+import { SessionExecution } from "@opencode-ai/core/session/execution"
+import * as SessionExecutionLocal from "@opencode-ai/core/session/execution/local"
+import { Location } from "@opencode-ai/core/location"
+import { AbsolutePath } from "@opencode-ai/core/schema"
 
 export const AppLayer = AppNodeBuilderV1.build(
   LayerNode.group([
@@ -105,7 +110,12 @@ export const AppLayer = AppNodeBuilderV1.build(
     Installation.node,
     ShareNext.node,
     SessionShare.node,
+    LoopScheduler.node,
   ]),
+  [
+    [SessionExecution.node, SessionExecutionLocal.node],
+    [Location.node, Location.boundNode(Location.Ref.make({ directory: AbsolutePath.make(process.cwd()) }))],
+  ],
 ).pipe(Layer.provideMerge(AppNodeBuilderV1.build(Ripgrep.node)), Layer.provideMerge(Observability.layer))
 
 const rt = ManagedRuntime.make(AppLayer, { memoMap })

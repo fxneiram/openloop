@@ -37,6 +37,7 @@ import { RunFooterView } from "./footer.view"
 import { RunScrollbackStream } from "./scrollback.surface"
 import { RUN_THEME_FALLBACK, resolveRunTheme, type RunTheme } from "./theme"
 import { modelInfo } from "./variant.shared"
+import type { RunLoopInfo } from "./footer.loop"
 import type {
   FooterApi,
   FooterEvent,
@@ -97,6 +98,7 @@ type RunFooterOptions = {
   onEditorOpen: (input: { value: string }) => Promise<string | undefined>
   onExit?: () => void
   onSubagentSelect?: (sessionID: string | undefined) => void
+  onLoopRun?: (name: string) => void
   treeSitterClient?: TreeSitterClient
 }
 
@@ -202,6 +204,8 @@ export class RunFooter implements FooterApi {
   private setSubagent: (next: FooterSubagentState) => void
   private queuedPrompts: Accessor<FooterQueuedPrompt[]>
   private setQueuedPrompts: Setter<FooterQueuedPrompt[]>
+  private loops: Accessor<RunLoopInfo[]>
+  private setLoops: Setter<RunLoopInfo[]>
   private promptRoute: FooterPromptRoute = { type: "composer" }
   private subagentMenuRows = SUBAGENT_ROWS
   private autocomplete = false
@@ -288,6 +292,9 @@ export class RunFooter implements FooterApi {
     const [queuedPrompts, setQueuedPrompts] = createSignal<FooterQueuedPrompt[]>([])
     this.queuedPrompts = queuedPrompts
     this.setQueuedPrompts = setQueuedPrompts
+    const [loops, setLoops] = createSignal<RunLoopInfo[]>([])
+    this.loops = loops
+    this.setLoops = setLoops
     this.base = Math.max(1, renderer.footerHeight - TEXTAREA_MIN_ROWS)
     this.scrollback = this.createScrollback(options.wrote ?? false)
 
@@ -309,6 +316,7 @@ export class RunFooter implements FooterApi {
               view: footer.view,
               subagent: footer.subagent,
               queuedPrompts: footer.queuedPrompts,
+              loops: footer.loops,
               findFiles: options.findFiles,
               agents: footer.agents,
               resources: footer.resources,
@@ -342,6 +350,7 @@ export class RunFooter implements FooterApi {
               onStatus: footer.setStatus,
               onSubagentSelect: options.onSubagentSelect,
               onQueuedRemove: footer.handleQueuedRemove,
+              onLoopRun: footer.handleLoopRun,
             })
           },
         }),
@@ -681,6 +690,23 @@ export class RunFooter implements FooterApi {
     return fn ? await fn(messageID) : false
   }
 
+  private handleLoopRun = (name: string): void => {
+    if (this.isClosed) {
+      return
+    }
+
+    this.setNotice(`running loop "${name}"`)
+    this.options.onLoopRun?.(name)
+  }
+
+  public updateLoops(loops: RunLoopInfo[]): void {
+    if (this.isGone) {
+      return
+    }
+
+    this.setLoops(loops)
+  }
+
   private handleInputClear = (): void => {
     this.clearInterruptTimer()
     this.clearExitTimer()
@@ -706,15 +732,17 @@ export class RunFooter implements FooterApi {
               ? 1 + SKILL_ROWS
               : this.promptRoute.type === "model"
                 ? 1 + MODEL_ROWS
-                : this.promptRoute.type === "variant"
-                  ? 1 + VARIANT_ROWS
-                  : this.promptRoute.type === "queued-menu"
-                    ? 1 + this.subagentMenuRows
-                    : this.promptRoute.type === "subagent-menu"
-                      ? 1 + this.subagentMenuRows
-                      : this.promptRoute.type === "subagent"
-                        ? this.base + SUBAGENT_INSPECTOR_ROWS
-                        : this.base + Math.max(TEXTAREA_MIN_ROWS, Math.min(PROMPT_MAX_ROWS, this.rows))
+          : this.promptRoute.type === "variant"
+            ? 1 + VARIANT_ROWS
+            : this.promptRoute.type === "loop"
+              ? 1 + COMMAND_ROWS
+              : this.promptRoute.type === "queued-menu"
+                ? 1 + this.subagentMenuRows
+                : this.promptRoute.type === "subagent-menu"
+                  ? 1 + this.subagentMenuRows
+                  : this.promptRoute.type === "subagent"
+                    ? this.base + SUBAGENT_INSPECTOR_ROWS
+                    : this.base + Math.max(TEXTAREA_MIN_ROWS, Math.min(PROMPT_MAX_ROWS, this.rows))
 
     if (height !== this.renderer.footerHeight) {
       this.renderer.footerHeight = height

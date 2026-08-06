@@ -112,6 +112,20 @@ import type {
   ProjectCopiesRemoveOutput,
   ProjectCopiesRefreshInput,
   ProjectCopiesRefreshOutput,
+  LoopsListInput,
+  LoopsListOutput,
+  LoopsRunInput,
+  LoopsRunOutput,
+  LoopsCreateInput,
+  LoopsCreateOutput,
+  LoopsUpdateInput,
+  LoopsUpdateOutput,
+  LoopsDeleteInput,
+  LoopsDeleteOutput,
+  LoopsEnableInput,
+  LoopsEnableOutput,
+  LoopsDisableInput,
+  LoopsDisableOutput,
 } from "./types"
 import { ClientError } from "./client-error"
 
@@ -979,6 +993,95 @@ export function make(options: ClientOptions) {
           {
             method: "POST",
             path: `/experimental/project/${encodeURIComponent(input.projectID)}/copy/refresh`,
+            query: { location: input["location"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+    },
+    loops: {
+      list: (input?: LoopsListInput, requestOptions?: RequestOptions) =>
+        request<LoopsListOutput>(
+          {
+            method: "GET",
+            path: `/experimental/loop`,
+            query: { location: input?.["location"] },
+            successStatus: 200,
+            declaredStatuses: [400, 401],
+            empty: false,
+          },
+          requestOptions,
+        ),
+      run: (input: LoopsRunInput, requestOptions?: RequestOptions) =>
+        request<LoopsRunOutput>(
+          {
+            method: "POST",
+            path: `/experimental/loop/run`,
+            query: { location: input["location"] },
+            body: { name: input["name"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+      create: (input: LoopsCreateInput, requestOptions?: RequestOptions) =>
+        request<LoopsCreateOutput>(
+          {
+            method: "POST",
+            path: `/experimental/loop`,
+            query: { location: input["location"] },
+            body: { name: input["name"], config: input["config"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+      update: (input: LoopsUpdateInput, requestOptions?: RequestOptions) =>
+        request<LoopsUpdateOutput>(
+          {
+            method: "PUT",
+            path: `/experimental/loop/${encodeURIComponent(input.name)}`,
+            query: { location: input["location"] },
+            body: { config: input["config"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+      delete: (input: LoopsDeleteInput, requestOptions?: RequestOptions) =>
+        request<LoopsDeleteOutput>(
+          {
+            method: "DELETE",
+            path: `/experimental/loop/${encodeURIComponent(input.name)}`,
+            query: { location: input["location"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+      enable: (input: LoopsEnableInput, requestOptions?: RequestOptions) =>
+        request<LoopsEnableOutput>(
+          {
+            method: "POST",
+            path: `/experimental/loop/${encodeURIComponent(input.name)}/enable`,
+            query: { location: input["location"] },
+            successStatus: 204,
+            declaredStatuses: [400, 401],
+            empty: true,
+          },
+          requestOptions,
+        ),
+      disable: (input: LoopsDisableInput, requestOptions?: RequestOptions) =>
+        request<LoopsDisableOutput>(
+          {
+            method: "POST",
+            path: `/experimental/loop/${encodeURIComponent(input.name)}/disable`,
             query: { location: input["location"] },
             successStatus: 204,
             declaredStatuses: [400, 401],

@@ -1,0 +1,238 @@
+import { TextAttributes, type TextareaRenderable, type KeyEvent } from "@opentui/core"
+import { useDialog } from "../ui/dialog"
+import { useSDK } from "../context/sdk"
+import { useTheme } from "../context/theme"
+import { createSignal, onMount } from "solid-js"
+import { errorMessage } from "../util/error"
+import type { ConfigLoopV1 } from "@opencode-ai/core/v1/config/loop"
+import { useBindings, useCommandShortcut } from "../keymap"
+import { useTuiConfig } from "../config"
+
+export type DialogLoopCreateProps = {
+  onCreated?: (name: string, config: ConfigLoopV1.Info) => void
+}
+
+export function DialogLoopCreate(props: DialogLoopCreateProps) {
+  const dialog = useDialog()
+  const sdk = useSDK()
+  const { theme } = useTheme()
+  const tuiConfig = useTuiConfig()
+  const submitShortcut = useCommandShortcut("dialog.prompt.submit")
+  dialog.setSize("large")
+
+  const [busy, setBusy] = createSignal(false)
+  const [error, setError] = createSignal<string | undefined>()
+
+  let nameRef: TextareaRenderable
+  let promptRef: TextareaRenderable
+  let cronRef: TextareaRenderable
+  let modelRef: TextareaRenderable
+  let agentRef: TextareaRenderable
+  let groupRef: TextareaRenderable
+
+  onMount(() => {
+    setTimeout(() => {
+      if (!nameRef || nameRef.isDestroyed) return
+      nameRef.focus()
+    }, 1)
+  })
+
+  function getFieldRefs() {
+    return [nameRef, promptRef, cronRef, modelRef, agentRef, groupRef]
+  }
+
+  function handleTab(e: KeyEvent) {
+    if (e.name !== "tab") return
+    e.preventDefault()
+    const fields = getFieldRefs()
+    const current = fields.findIndex((f) => f?.focused)
+    if (current === -1) return
+    const next = e.shift
+      ? (current - 1 + fields.length) % fields.length
+      : (current + 1) % fields.length
+    fields[next]?.focus()
+  }
+
+  const [nameTarget, setNameTarget] = createSignal<TextareaRenderable>()
+
+  useBindings(() => ({
+    target: nameTarget,
+    enabled: nameTarget() !== undefined && !busy(),
+    priority: 1,
+    commands: [
+      {
+        name: "dialog.prompt.submit",
+        title: "Submit",
+        category: "Dialog",
+        run: handleCreate,
+      },
+    ],
+    bindings: tuiConfig.keybinds.gather("dialog.prompt", ["dialog.prompt.submit"]),
+  }))
+
+  async function handleCreate() {
+    const loopName = nameRef?.plainText?.trim() ?? ""
+    const loopPrompt = promptRef?.plainText?.trim() ?? ""
+    const loopCron = cronRef?.plainText?.trim() ?? ""
+
+    if (!loopName || !loopPrompt || !loopCron) {
+      setError("Name, prompt, and cron are required")
+      return
+    }
+
+    setBusy(true)
+    setError(undefined)
+
+    try {
+      const config: ConfigLoopV1.Info = {
+        prompt: loopPrompt,
+        cron: loopCron,
+        ...(modelRef?.plainText?.trim() && { model: modelRef.plainText.trim() }),
+        ...(agentRef?.plainText?.trim() && { agent: agentRef.plainText.trim() }),
+        ...(groupRef?.plainText?.trim() && { group: groupRef.plainText.trim() }),
+      }
+
+      await sdk.client.v2.loop.create({ name: loopName, config }, { throwOnError: true })
+      props.onCreated?.(loopName, config)
+      dialog.clear()
+    } catch (err) {
+      setError(errorMessage(err))
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <box paddingLeft={2} paddingRight={2} gap={1}>
+      <box flexDirection="row" justifyContent="space-between">
+        <text attributes={TextAttributes.BOLD} fg={theme.text}>
+          Create Loop
+        </text>
+        <text fg={theme.textMuted} onMouseUp={() => dialog.clear()}>
+          esc
+        </text>
+      </box>
+
+      <box gap={1}>
+        <text fg={theme.text}>
+          Name: <span style={{ fg: theme.textMuted }}>(required)</span>
+        </text>
+        <textarea
+          height={1}
+          ref={(val: TextareaRenderable) => { nameRef = val; setNameTarget(val) }}
+          placeholder="my-loop"
+          placeholderColor={theme.textMuted}
+          textColor={theme.text}
+          focusedTextColor={theme.text}
+          cursorColor={theme.text}
+          onKeyDown={handleTab}
+        />
+
+        <text fg={theme.text}>
+          Prompt: <span style={{ fg: theme.textMuted }}>(required)</span>
+        </text>
+        <textarea
+          height={3}
+          ref={(val: TextareaRenderable) => { promptRef = val }}
+          placeholder="What should the loop do?"
+          placeholderColor={theme.textMuted}
+          textColor={theme.text}
+          focusedTextColor={theme.text}
+          cursorColor={theme.text}
+          onKeyDown={handleTab}
+        />
+
+        <text fg={theme.text}>
+          Cron: <span style={{ fg: theme.textMuted }}>(required, e.g. "0 9 * * *")</span>
+        </text>
+        <textarea
+          height={1}
+          ref={(val: TextareaRenderable) => { cronRef = val }}
+          placeholder="0 9 * * *"
+          placeholderColor={theme.textMuted}
+          textColor={theme.text}
+          focusedTextColor={theme.text}
+          cursorColor={theme.text}
+          onKeyDown={handleTab}
+        />
+
+        <text fg={theme.text}>Model: <span style={{ fg: theme.textMuted }}>(optional)</span></text>
+        <textarea
+          height={1}
+          ref={(val: TextareaRenderable) => { modelRef = val }}
+          placeholder="anthropic/claude-sonnet-4-20250514"
+          placeholderColor={theme.textMuted}
+          textColor={theme.text}
+          focusedTextColor={theme.text}
+          cursorColor={theme.text}
+          onKeyDown={handleTab}
+        />
+
+        <text fg={theme.text}>Agent: <span style={{ fg: theme.textMuted }}>(optional)</span></text>
+        <textarea
+          height={1}
+          ref={(val: TextareaRenderable) => { agentRef = val }}
+          placeholder="default"
+          placeholderColor={theme.textMuted}
+          textColor={theme.text}
+          focusedTextColor={theme.text}
+          cursorColor={theme.text}
+          onKeyDown={handleTab}
+        />
+
+        <text fg={theme.text}>Group: <span style={{ fg: theme.textMuted }}>(optional)</span></text>
+        <textarea
+          height={1}
+          ref={(val: TextareaRenderable) => { groupRef = val }}
+          placeholder="daily"
+          placeholderColor={theme.textMuted}
+          textColor={theme.text}
+          focusedTextColor={theme.text}
+          cursorColor={theme.text}
+          onKeyDown={handleTab}
+        />
+      </box>
+
+      {error() && (
+        <text fg={theme.error}>{error()}</text>
+      )}
+
+      <box gap={1} flexDirection="row">
+        {busy() ? (
+          <text fg={theme.textMuted}>Creating...</text>
+        ) : (
+          <text fg={theme.text} onMouseUp={handleCreate}>
+            {submitShortcut() ? (
+              <>
+                <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>{submitShortcut()}</span>
+                <span style={{ fg: theme.textMuted }}> submit</span>
+              </>
+            ) : (
+              <>
+                <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>enter</span>
+                <span style={{ fg: theme.textMuted }}> create</span>
+              </>
+            )}
+          </text>
+        )}
+      </box>
+    </box>
+  )
+}
+
+DialogLoopCreate.show = (
+  dialog: ReturnType<typeof useDialog>,
+  options?: Omit<DialogLoopCreateProps, "title">,
+) => {
+  return new Promise<{ name: string; config: ConfigLoopV1.Info } | null>((resolve) => {
+    dialog.replace(
+      () => (
+        <DialogLoopCreate
+          onCreated={(name, config) => resolve({ name, config })}
+          {...options}
+        />
+      ),
+      () => resolve(null),
+    )
+  })
+}

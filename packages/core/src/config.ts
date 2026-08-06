@@ -15,6 +15,7 @@ import { ConfigAttachments } from "./config/attachments"
 import { ConfigCompaction } from "./config/compaction"
 import { ConfigCommand } from "./config/command"
 import { ConfigExperimental } from "./config/experimental"
+import { ConfigLoopV1 } from "./v1/config/loop"
 import { ConfigFormatter } from "./config/formatter"
 import { ConfigLSP } from "./config/lsp"
 import { ConfigMCP } from "./config/mcp"
@@ -92,6 +93,9 @@ export class Info extends Schema.Class<Info>("Config.Info")({
   }),
   commands: Schema.Record(Schema.String, ConfigCommand.Info).pipe(Schema.optional).annotate({
     description: "Named slash command definitions",
+  }),
+  loop: Schema.Record(Schema.String, ConfigLoopV1.Info).pipe(Schema.optional).annotate({
+    description: "Scheduled loop tasks executed periodically via cron",
   }),
   instructions: Schema.String.pipe(Schema.Array, Schema.optional).annotate({
     description: "Additional paths or URLs supplying ambient instructions",

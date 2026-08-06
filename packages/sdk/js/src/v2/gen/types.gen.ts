@@ -1883,6 +1883,21 @@ export type AttachmentConfig = {
   image?: ImageAttachmentConfig
 }
 
+export type ConfigLoop = {
+  group?: string
+  model?: string
+  agent?: string
+  prompt: string
+  directory?: string
+  cron: string
+  timezone?: "local" | "UTC"
+  on_conflict?: "skip" | "stop_and_restart" | "queue"
+  enabled?: boolean
+  max_queue_length?: number
+  timeout?: number
+  max_failures?: number
+}
+
 export type Config = {
   $schema?: string
   shell?: string
@@ -2010,6 +2025,9 @@ export type Config = {
   tool_output?: {
     max_lines?: number
     max_bytes?: number
+  }
+  loop?: {
+    [key: string]: ConfigLoop
   }
   compaction?: {
     auto?: boolean
@@ -2954,6 +2972,28 @@ export type ProjectCopyError = {
   data: {
     message: string
     forceRequired?: boolean
+  }
+}
+
+export type LoopConfig = {
+  group?: string
+  model?: string
+  agent?: string
+  prompt: string
+  directory?: string
+  cron: string
+  timezone?: "local" | "UTC"
+  on_conflict?: "skip" | "stop_and_restart" | "queue"
+  enabled?: boolean
+  max_queue_length?: number
+  timeout?: number
+  max_failures?: number
+}
+
+export type LoopError = {
+  name: "LoopError"
+  data: {
+    message: string
   }
 }
 
@@ -13584,6 +13624,233 @@ export type V2ProjectCopyRefreshResponses = {
 }
 
 export type V2ProjectCopyRefreshResponse = V2ProjectCopyRefreshResponses[keyof V2ProjectCopyRefreshResponses]
+
+export type V2LoopListData = {
+  body?: never
+  path?: never
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop"
+}
+
+export type V2LoopListErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopListError = V2LoopListErrors[keyof V2LoopListErrors]
+
+export type V2LoopListResponses = {
+  /**
+   * Success
+   */
+  200: {
+    [key: string]: LoopConfig
+  }
+}
+
+export type V2LoopListResponse = V2LoopListResponses[keyof V2LoopListResponses]
+
+export type V2LoopCreateData = {
+  body?: {
+    name: string
+    config: LoopConfig
+  }
+  path?: never
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop"
+}
+
+export type V2LoopCreateErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopCreateError = V2LoopCreateErrors[keyof V2LoopCreateErrors]
+
+export type V2LoopCreateResponses = {
+  /**
+   * <No Content>
+   */
+  204: void
+}
+
+export type V2LoopCreateResponse = V2LoopCreateResponses[keyof V2LoopCreateResponses]
+
+export type V2LoopRunData = {
+  body?: {
+    name: string
+  }
+  path?: never
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop/run"
+}
+
+export type V2LoopRunErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopRunError = V2LoopRunErrors[keyof V2LoopRunErrors]
+
+export type V2LoopRunResponses = {
+  /**
+   * <No Content>
+   */
+  204: void
+}
+
+export type V2LoopRunResponse = V2LoopRunResponses[keyof V2LoopRunResponses]
+
+export type V2LoopDeleteData = {
+  body?: never
+  path: {
+    name: string
+  }
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop/{name}"
+}
+
+export type V2LoopDeleteErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopDeleteError = V2LoopDeleteErrors[keyof V2LoopDeleteErrors]
+
+export type V2LoopDeleteResponses = {
+  /**
+   * <No Content>
+   */
+  204: void
+}
+
+export type V2LoopDeleteResponse = V2LoopDeleteResponses[keyof V2LoopDeleteResponses]
+
+export type V2LoopUpdateData = {
+  body?: {
+    config: LoopConfig
+  }
+  path: {
+    name: string
+  }
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop/{name}"
+}
+
+export type V2LoopUpdateErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopUpdateError = V2LoopUpdateErrors[keyof V2LoopUpdateErrors]
+
+export type V2LoopUpdateResponses = {
+  /**
+   * <No Content>
+   */
+  204: void
+}
+
+export type V2LoopUpdateResponse = V2LoopUpdateResponses[keyof V2LoopUpdateResponses]
+
+export type V2LoopEnableData = {
+  body?: never
+  path: {
+    name: string
+  }
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop/{name}/enable"
+}
+
+export type V2LoopEnableErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopEnableError = V2LoopEnableErrors[keyof V2LoopEnableErrors]
+
+export type V2LoopEnableResponses = {
+  /**
+   * <No Content>
+   */
+  204: void
+}
+
+export type V2LoopEnableResponse = V2LoopEnableResponses[keyof V2LoopEnableResponses]
+
+export type V2LoopDisableData = {
+  body?: never
+  path: {
+    name: string
+  }
+  query?: {
+    location?: {
+      directory?: string
+      workspace?: string
+    }
+  }
+  url: "/experimental/loop/{name}/disable"
+}
+
+export type V2LoopDisableErrors = {
+  /**
+   * LoopError | InvalidRequestError
+   */
+  400: LoopError | InvalidRequestError
+}
+
+export type V2LoopDisableError = V2LoopDisableErrors[keyof V2LoopDisableErrors]
+
+export type V2LoopDisableResponses = {
+  /**
+   * <No Content>
+   */
+  204: void
+}
+
+export type V2LoopDisableResponse = V2LoopDisableResponses[keyof V2LoopDisableResponses]
 
 export type PtyConnectData = {
   body?: never
