@@ -91,6 +91,7 @@ import type {
   InstanceDisposeErrors,
   InstanceDisposeResponses,
   LocationRef,
+  LoopConfig,
   LspStatusErrors,
   LspStatusResponses,
   McpAddErrors,
@@ -297,10 +298,20 @@ import type {
   V2IntegrationListResponses,
   V2LocationGetErrors,
   V2LocationGetResponses,
+  V2LoopCreateErrors,
+  V2LoopCreateResponses,
+  V2LoopDeleteErrors,
+  V2LoopDeleteResponses,
+  V2LoopDisableErrors,
+  V2LoopDisableResponses,
+  V2LoopEnableErrors,
+  V2LoopEnableResponses,
   V2LoopListErrors,
   V2LoopListResponses,
   V2LoopRunErrors,
   V2LoopRunResponses,
+  V2LoopUpdateErrors,
+  V2LoopUpdateResponses,
   V2ModelListErrors,
   V2ModelListResponses,
   V2PermissionRequestListErrors,
@@ -7009,6 +7020,41 @@ export class Loop extends HeyApiClient {
     })
   }
 
+  public create<ThrowOnError extends boolean = false>(
+    parameters?: {
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+      name?: string
+      config?: LoopConfig
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "query", key: "location" },
+            { in: "body", key: "name" },
+            { in: "body", key: "config" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<V2LoopCreateResponses, V2LoopCreateErrors, ThrowOnError>({
+      url: "/experimental/loop",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+
   public run<ThrowOnError extends boolean = false>(
     parameters?: {
       location?: {
@@ -7039,6 +7085,125 @@ export class Loop extends HeyApiClient {
         ...options?.headers,
         ...params.headers,
       },
+    })
+  }
+
+  public delete<ThrowOnError extends boolean = false>(
+    parameters: {
+      name: string
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "name" },
+            { in: "query", key: "location" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).delete<V2LoopDeleteResponses, V2LoopDeleteErrors, ThrowOnError>({
+      url: "/experimental/loop/{name}",
+      ...options,
+      ...params,
+    })
+  }
+
+  public update<ThrowOnError extends boolean = false>(
+    parameters: {
+      name: string
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+      config?: LoopConfig
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "name" },
+            { in: "query", key: "location" },
+            { in: "body", key: "config" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).put<V2LoopUpdateResponses, V2LoopUpdateErrors, ThrowOnError>({
+      url: "/experimental/loop/{name}",
+      ...options,
+      ...params,
+      headers: {
+        "Content-Type": "application/json",
+        ...options?.headers,
+        ...params.headers,
+      },
+    })
+  }
+
+  public enable<ThrowOnError extends boolean = false>(
+    parameters: {
+      name: string
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "name" },
+            { in: "query", key: "location" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<V2LoopEnableResponses, V2LoopEnableErrors, ThrowOnError>({
+      url: "/experimental/loop/{name}/enable",
+      ...options,
+      ...params,
+    })
+  }
+
+  public disable<ThrowOnError extends boolean = false>(
+    parameters: {
+      name: string
+      location?: {
+        directory?: string
+        workspace?: string
+      }
+    },
+    options?: Options<never, ThrowOnError>,
+  ) {
+    const params = buildClientParams(
+      [parameters],
+      [
+        {
+          args: [
+            { in: "path", key: "name" },
+            { in: "query", key: "location" },
+          ],
+        },
+      ],
+    )
+    return (options?.client ?? this.client).post<V2LoopDisableResponses, V2LoopDisableErrors, ThrowOnError>({
+      url: "/experimental/loop/{name}/disable",
+      ...options,
+      ...params,
     })
   }
 }

@@ -17,7 +17,11 @@ export const LoopCommand = cmd({
       .command(LoopStatusCommand)
       .command(LoopHistoryCommand)
       .command(LoopRunCommand)
+      .command(LoopCreateCommand)
+      .command(LoopEditCommand)
+      .command(LoopDeleteCommand)
       .command(LoopEnableCommand)
+      .command(LoopDisableCommand)
       .demandCommand(),
   async handler() {},
 })
@@ -357,6 +361,272 @@ export const LoopEnableCommand = effectCmd({
     UI.println(
       UI.Style.TEXT_SUCCESS_BOLD +
         `Loop "${args.name}" re-enabled. Failures reset to 0.` +
+        UI.Style.TEXT_NORMAL,
+    )
+  }) as any,
+})
+
+export const LoopCreateCommand = effectCmd({
+  command: "create <name>",
+  describe: "create a new loop",
+  instance: false,
+  builder: (yargs) =>
+    yargs
+      .positional("name", {
+        type: "string",
+        describe: "loop name",
+        demandOption: true,
+      })
+      .option("prompt", {
+        type: "string",
+        describe: "prompt text",
+        demandOption: true,
+      })
+      .option("cron", {
+        type: "string",
+        describe: "cron expression",
+        demandOption: true,
+      })
+      .option("model", {
+        type: "string",
+        describe: "model override",
+      })
+      .option("agent", {
+        type: "string",
+        describe: "agent override",
+      })
+      .option("group", {
+        type: "string",
+        describe: "loop group",
+      })
+      .option("timezone", {
+        type: "string",
+        choices: ["local", "UTC"],
+        describe: "timezone for cron",
+      })
+      .option("on-conflict", {
+        type: "string",
+        choices: ["skip", "stop_and_restart", "queue"],
+        describe: "conflict handling strategy",
+      })
+      .option("timeout", {
+        type: "number",
+        describe: "timeout in seconds",
+      })
+      .option("max-failures", {
+        type: "number",
+        describe: "max consecutive failures before disabling",
+      }),
+  handler: Effect.fn("Cli.loop.create")(function* (args) {
+    const loops = yield* Effect.promise(() => loadLoops())
+    if (loops[args.name]) return yield* fail(`Loop already exists: ${args.name}`)
+
+    const config: ConfigLoopV1.Info = {
+      prompt: args.prompt,
+      cron: args.cron,
+      ...(args.model && { model: args.model }),
+      ...(args.agent && { agent: args.agent }),
+      ...(args.group && { group: args.group }),
+      ...(args.timezone && { timezone: args.timezone as "local" | "UTC" }),
+      ...(args["on-conflict"] && { on_conflict: args["on-conflict"] as "skip" | "stop_and_restart" | "queue" }),
+      ...(args.timeout && { timeout: args.timeout }),
+      ...(args["max-failures"] && { max_failures: args["max-failures"] }),
+    }
+
+    const configPath = findConfigPath()
+    if (!configPath) return yield* fail("No config file found")
+
+    yield* Effect.promise(async () => {
+      const fs = await import("fs")
+      const text = fs.existsSync(configPath) ? fs.readFileSync(configPath, "utf-8") : "{}"
+      const { parse, modify, applyEdits } = await import("jsonc-parser")
+      const errors: any[] = []
+      const input = parse(text, errors, { allowTrailingComma: true })
+      if (errors.length) throw new Error("Failed to parse config file")
+
+      const edits = modify(text, ["loop", args.name], config, {
+        formattingOptions: { tabSize: 2, insertSpaces: true },
+      })
+      const updated = applyEdits(text, edits)
+      fs.writeFileSync(configPath, updated, "utf-8")
+    })
+
+    UI.println(
+      UI.Style.TEXT_SUCCESS_BOLD +
+        `Loop "${args.name}" created.` +
+        UI.Style.TEXT_NORMAL,
+    )
+  }) as any,
+})
+
+export const LoopEditCommand = effectCmd({
+  command: "edit <name>",
+  describe: "edit an existing loop",
+  instance: false,
+  builder: (yargs) =>
+    yargs
+      .positional("name", {
+        type: "string",
+        describe: "loop name",
+        demandOption: true,
+      })
+      .option("prompt", {
+        type: "string",
+        describe: "new prompt text",
+      })
+      .option("cron", {
+        type: "string",
+        describe: "new cron expression",
+      })
+      .option("model", {
+        type: "string",
+        describe: "new model override",
+      })
+      .option("agent", {
+        type: "string",
+        describe: "new agent override",
+      })
+      .option("group", {
+        type: "string",
+        describe: "new loop group",
+      })
+      .option("timezone", {
+        type: "string",
+        choices: ["local", "UTC"],
+        describe: "new timezone for cron",
+      })
+      .option("on-conflict", {
+        type: "string",
+        choices: ["skip", "stop_and_restart", "queue"],
+        describe: "new conflict handling strategy",
+      })
+      .option("timeout", {
+        type: "number",
+        describe: "new timeout in seconds",
+      })
+      .option("max-failures", {
+        type: "number",
+        describe: "new max consecutive failures before disabling",
+      }),
+  handler: Effect.fn("Cli.loop.edit")(function* (args) {
+    const loops = yield* Effect.promise(() => loadLoops())
+    if (!loops[args.name]) return yield* fail(`Loop not found: ${args.name}`)
+
+    const existing = loops[args.name]
+    const config: ConfigLoopV1.Info = {
+      ...existing,
+      ...(args.prompt && { prompt: args.prompt }),
+      ...(args.cron && { cron: args.cron }),
+      ...(args.model !== undefined && { model: args.model }),
+      ...(args.agent !== undefined && { agent: args.agent }),
+      ...(args.group !== undefined && { group: args.group }),
+      ...(args.timezone && { timezone: args.timezone as "local" | "UTC" }),
+      ...(args["on-conflict"] && { on_conflict: args["on-conflict"] as "skip" | "stop_and_restart" | "queue" }),
+      ...(args.timeout !== undefined && { timeout: args.timeout }),
+      ...(args["max-failures"] !== undefined && { max_failures: args["max-failures"] }),
+    }
+
+    const configPath = findConfigPath()
+    if (!configPath) return yield* fail("No config file found")
+
+    yield* Effect.promise(async () => {
+      const fs = await import("fs")
+      const text = fs.readFileSync(configPath, "utf-8")
+      const { parse, modify, applyEdits } = await import("jsonc-parser")
+      const errors: any[] = []
+      const input = parse(text, errors, { allowTrailingComma: true })
+      if (errors.length) throw new Error("Failed to parse config file")
+
+      const edits = modify(text, ["loop", args.name], config, {
+        formattingOptions: { tabSize: 2, insertSpaces: true },
+      })
+      const updated = applyEdits(text, edits)
+      fs.writeFileSync(configPath, updated, "utf-8")
+    })
+
+    UI.println(
+      UI.Style.TEXT_SUCCESS_BOLD +
+        `Loop "${args.name}" updated.` +
+        UI.Style.TEXT_NORMAL,
+    )
+  }) as any,
+})
+
+export const LoopDeleteCommand = effectCmd({
+  command: "delete <name>",
+  describe: "delete a loop",
+  instance: false,
+  builder: (yargs) =>
+    yargs.positional("name", {
+      type: "string",
+      describe: "loop name",
+      demandOption: true,
+    }),
+  handler: Effect.fn("Cli.loop.delete")(function* (args) {
+    const loops = yield* Effect.promise(() => loadLoops())
+    if (!loops[args.name]) return yield* fail(`Loop not found: ${args.name}`)
+
+    const configPath = findConfigPath()
+    if (!configPath) return yield* fail("No config file found")
+
+    yield* Effect.promise(async () => {
+      const fs = await import("fs")
+      const text = fs.readFileSync(configPath, "utf-8")
+      const { parse, modify, applyEdits } = await import("jsonc-parser")
+      const errors: any[] = []
+      const input = parse(text, errors, { allowTrailingComma: true })
+      if (errors.length) throw new Error("Failed to parse config file")
+
+      const edits = modify(text, ["loop", args.name], undefined, {
+        formattingOptions: { tabSize: 2, insertSpaces: true },
+      })
+      const updated = applyEdits(text, edits)
+      fs.writeFileSync(configPath, updated, "utf-8")
+    })
+
+    UI.println(
+      UI.Style.TEXT_SUCCESS_BOLD +
+        `Loop "${args.name}" deleted.` +
+        UI.Style.TEXT_NORMAL,
+    )
+  }) as any,
+})
+
+export const LoopDisableCommand = effectCmd({
+  command: "disable <name>",
+  describe: "disable a loop",
+  instance: false,
+  builder: (yargs) =>
+    yargs.positional("name", {
+      type: "string",
+      describe: "loop name",
+      demandOption: true,
+    }),
+  handler: Effect.fn("Cli.loop.disable")(function* (args) {
+    const loops = yield* Effect.promise(() => loadLoops())
+    if (!loops[args.name]) return yield* fail(`Loop not found: ${args.name}`)
+
+    const configPath = findConfigPath()
+    if (!configPath) return yield* fail("No config file found")
+
+    yield* Effect.promise(async () => {
+      const fs = await import("fs")
+      const text = fs.readFileSync(configPath, "utf-8")
+      const { parse, modify, applyEdits } = await import("jsonc-parser")
+      const errors: any[] = []
+      const input = parse(text, errors, { allowTrailingComma: true })
+      if (errors.length) throw new Error("Failed to parse config file")
+
+      const edits = modify(text, ["loop", args.name, "enabled"], false, {
+        formattingOptions: { tabSize: 2, insertSpaces: true },
+      })
+      const updated = applyEdits(text, edits)
+      fs.writeFileSync(configPath, updated, "utf-8")
+    })
+
+    UI.println(
+      UI.Style.TEXT_SUCCESS_BOLD +
+        `Loop "${args.name}" disabled.` +
         UI.Style.TEXT_NORMAL,
     )
   }) as any,

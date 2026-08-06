@@ -6,6 +6,7 @@ import { useSDK } from "../context/sdk"
 import { useTheme } from "../context/theme"
 import { errorMessage } from "../util/error"
 import type { ConfigLoopV1 } from "@opencode-ai/core/v1/config/loop"
+import { DialogLoopCreate } from "./dialog-loop-create"
 
 export type DialogLoopProps = {
   onRun?: (name: string, loop: ConfigLoopV1.Info) => void
@@ -20,7 +21,7 @@ export function DialogLoop(props: DialogLoopProps) {
   const [loadError, setLoadError] = createSignal<unknown>()
   const [running, setRunning] = createSignal<string>()
 
-  const [loops] = createResource(() =>
+  const [loops, { refetch }] = createResource(() =>
     sdk.client.v2.loop
       .list({}, { throwOnError: true })
       .then((result) => result.data)
@@ -53,6 +54,51 @@ export function DialogLoop(props: DialogLoopProps) {
     }))
   })
 
+  function openCreateDialog() {
+    dialog.replace(() => (
+      <DialogLoopCreate onCreated={() => refetch()} />
+    ))
+  }
+
+  const actions = createMemo(() => [
+    {
+      command: "dialog.loop.create",
+      title: "create",
+      onTrigger: () => {
+        openCreateDialog()
+      },
+    },
+    {
+      command: "dialog.loop.run",
+      title: "run",
+      onTrigger: async (option: DialogSelectOption<string>) => {
+        if (running()) return
+        setRunning(option.value)
+        props.onRun?.(option.value, loops()?.[option.value] ?? { prompt: "", cron: "" })
+        try {
+          await sdk.client.v2.loop.run({ name: option.value }, { throwOnError: true })
+          dialog.clear()
+        } catch (error) {
+          setLoadError(error)
+        } finally {
+          setRunning(undefined)
+        }
+      },
+    },
+    {
+      command: "dialog.loop.delete",
+      title: "delete",
+      onTrigger: async (option: DialogSelectOption<string>) => {
+        try {
+          await sdk.client.v2.loop.delete({ name: option.value }, { throwOnError: true })
+          refetch()
+        } catch (error) {
+          setLoadError(error)
+        }
+      },
+    },
+  ])
+
   async function runLoop(name: string, loop: ConfigLoopV1.Info) {
     if (running()) return
     setRunning(name)
@@ -72,6 +118,7 @@ export function DialogLoop(props: DialogLoopProps) {
       title="Loops"
       placeholder="Search loops..."
       options={options()}
+      actions={actions()}
       renderFilter={!showError()}
       locked={showError() || running() !== undefined}
       emptyView={
