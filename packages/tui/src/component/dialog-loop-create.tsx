@@ -2,9 +2,11 @@ import { TextAttributes, type TextareaRenderable } from "@opentui/core"
 import { useDialog } from "../ui/dialog"
 import { useSDK } from "../context/sdk"
 import { useTheme } from "../context/theme"
-import { createSignal } from "solid-js"
+import { createSignal, onMount } from "solid-js"
 import { errorMessage } from "../util/error"
 import type { ConfigLoopV1 } from "@opencode-ai/core/v1/config/loop"
+import { useBindings, useCommandShortcut } from "../keymap"
+import { useTuiConfig } from "../config"
 
 export type DialogLoopCreateProps = {
   onCreated?: (name: string, config: ConfigLoopV1.Info) => void
@@ -14,6 +16,8 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
   const dialog = useDialog()
   const sdk = useSDK()
   const { theme } = useTheme()
+  const tuiConfig = useTuiConfig()
+  const submitShortcut = useCommandShortcut("dialog.prompt.submit")
   dialog.setSize("large")
 
   const [busy, setBusy] = createSignal(false)
@@ -25,6 +29,30 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
   let modelRef: TextareaRenderable
   let agentRef: TextareaRenderable
   let groupRef: TextareaRenderable
+
+  onMount(() => {
+    setTimeout(() => {
+      if (!nameRef || nameRef.isDestroyed) return
+      nameRef.focus()
+    }, 1)
+  })
+
+  const [nameTarget, setNameTarget] = createSignal<TextareaRenderable>()
+
+  useBindings(() => ({
+    target: nameTarget,
+    enabled: nameTarget() !== undefined && !busy(),
+    priority: 1,
+    commands: [
+      {
+        name: "dialog.prompt.submit",
+        title: "Submit",
+        category: "Dialog",
+        run: handleCreate,
+      },
+    ],
+    bindings: tuiConfig.keybinds.gather("dialog.prompt", ["dialog.prompt.submit"]),
+  }))
 
   async function handleCreate() {
     const loopName = nameRef?.plainText?.trim() ?? ""
@@ -75,7 +103,7 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
         </text>
         <textarea
           height={1}
-          ref={(val: TextareaRenderable) => { nameRef = val }}
+          ref={(val: TextareaRenderable) => { nameRef = val; setNameTarget(val) }}
           placeholder="my-loop"
           placeholderColor={theme.textMuted}
           textColor={theme.text}
@@ -152,8 +180,17 @@ export function DialogLoopCreate(props: DialogLoopCreateProps) {
           <text fg={theme.textMuted}>Creating...</text>
         ) : (
           <text fg={theme.text} onMouseUp={handleCreate}>
-            <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>enter</span>
-            <span style={{ fg: theme.textMuted }}> create</span>
+            {submitShortcut() ? (
+              <>
+                <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>{submitShortcut()}</span>
+                <span style={{ fg: theme.textMuted }}> submit</span>
+              </>
+            ) : (
+              <>
+                <span style={{ fg: theme.success, attributes: TextAttributes.BOLD }}>enter</span>
+                <span style={{ fg: theme.textMuted }}> create</span>
+              </>
+            )}
           </text>
         )}
       </box>
